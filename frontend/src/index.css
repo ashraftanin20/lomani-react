@@ -104,5 +104,8 @@ img.medium {
 /* Rating */
 .rating {
   color: #f0c040;
-  margin: 00.1rem;
+  margin: 0.1rem;
+}
+.rating span:last-child {
+  color: #404040;
 }
