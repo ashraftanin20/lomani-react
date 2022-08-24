@@ -4,54 +4,58 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import Rating from '../components/Rating';
-import { detailsProduct } from '../slices/ProductDetailsSlice';
+import { addToCart } from '../features/CartSlice';
+import { fetchProductDetails } from '../features/ProductDetailsSlice';
+import { useGetProductDetailsQuery } from '../features/ProductsApi';
 
 export default function ProductScreen() {
     const dispatch = useDispatch();
     const { id } = useParams();
-    const productDetails = useSelector( state => state.productDetails);
+    const { data, error, isLoading } = useGetProductDetailsQuery(id);
+    //const productDetails = useSelector( state => state.productDetails);
     const [qty, setQty] = useState(1);
-    const { loading, error, product } = productDetails;
-    let navigate = useNavigate();
+   // const { status, product } = productDetails;
+    //let navigate = useNavigate();
 
     useEffect(() => {
-        dispatch(detailsProduct(id));
-    }, [dispatch, id]);
+        dispatch(fetchProductDetails(id));
+    }, [dispatch, id, qty, addToCart]);
 
     const addToCartHandler = () => {
-        navigate(`/cart/${id}?qty=${qty}`);
+        dispatch(addToCart({product: data, qty: qty}));
+        //navigate(`/cart/${id}?qty=${qty}`);
     }
         return (
             <div>
             { 
-                loading ? (<LoadingBox></LoadingBox>) : 
-                error ? (<MessageBox variant="danger">{error}</MessageBox>) : 
+                isLoading ? (<LoadingBox></LoadingBox>) : 
+                 error ? (<MessageBox variant="danger">Problem loading product details.</MessageBox>) : 
                 ( 
                     <div>
                 <Link to="/">Back to Products</Link>
                 <div className="row top">
                     <div className="col-2">
-                        <img className="large" src={product.image} alt={product.name} />
+                        <img className="large" src={data.image} alt={data.name} />
                     </div>
                     <div className="col-1">
                         <ul>
                             <li>
-                                <h1>{product.name}</h1>
+                                <h1>{data.name}</h1>
                             </li>
                         </ul>
                         <ul>
                             <li>
                                 <Rating
-                                    rating={product.rating}
-                                    numReviews={product.numReviews} 
+                                    rating={data.rating}
+                                    numReviews={data.numReviews} 
                                 ></Rating>
                             </li>
                             <li>
-                                Price: ${product.price} 
+                                Price: ${data.price} 
                             </li>
                             <li>
                                 Description: 
-                                <p>{product.description}</p>
+                                <p>{data.description}</p>
                             </li>
                         </ul>
                     </div>
@@ -61,14 +65,14 @@ export default function ProductScreen() {
                                 <li>
                                     <div className="row">
                                         <div>Price</div>
-                                        <div className="price">${product.price}</div>
+                                        <div className="price">${data.price}</div>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="row">
                                         <div>Status</div>
                                         <div>
-                                            {product.countInStock > 0 ? (
+                                            {data.countInStock > 0 ? (
                                                     <span className="success">In Stock</span>
                                                 ) : (
                                                     <span className="danger">Unavailable</span>
@@ -78,13 +82,13 @@ export default function ProductScreen() {
                                     </div>
                                 </li>
                                 {
-                                    product.countInStock > 0 && (
+                                    data.countInStock > 0 && (
                                         <>
                                         <li className="row">
                                             <div>Qty</div>
                                             <div>
-                                                <select value={qty} onChange={e => setQty(e.target.value)}>
-                                                    {[...Array(product.countInStock).keys()].map((x) => (
+                                                <select type="number" value={qty} onChange={e => setQty(parseInt(e.target.value))}>
+                                                    {[...Array(data.countInStock).keys()].map((x) => (
                                                             <option key={x + 1} value={x + 1}> {x + 1}</option>
                                                         )
                                                     )}

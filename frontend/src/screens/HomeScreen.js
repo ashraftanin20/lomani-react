@@ -1,26 +1,21 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import Product from '../components/Product';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { fetchProducts } from '../slices/ProductsSlice';
+import { useGetAllProductsQuery } from '../features/ProductsApi';
 
 
-export default function HomeScreen() {
-    const dispatch = useDispatch();
-    const productList = useSelector((state) => state.productList);
-    const { loading, error, products } = productList;
-    useEffect(() => {
-        dispatch(fetchProducts());
-    },[]);
+ export default function HomeScreen () {
+
+    const { data, error, isLoading } = useGetAllProductsQuery();
     return (
         <div>
         { 
-            loading ? (<LoadingBox></LoadingBox>) : 
-            error ? (<MessageBox variant="danger">{error}</MessageBox>) : 
+            isLoading ? (<LoadingBox></LoadingBox>) : 
+            error ? (<MessageBox variant="danger">There was an error featching products.</MessageBox>) : 
             ( 
                 <div className="row center">
-                    {products.map((product) => (
+                    {data.map((product) => (
                             <Product key={product._id} product={product} />
                         ))
                     };
@@ -30,3 +25,4 @@ export default function HomeScreen() {
         </div>
     )
 }
+
