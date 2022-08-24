@@ -1,10 +1,19 @@
-import React from 'react'
+import React from 'react';
 import { useParams, useSearchParams } from 'react-router-dom'
 
 export default function CartScreen() {
     const { id } = useParams();
     const [searchParams] = useSearchParams();
-    const qty = searchParams.get('qty');
+    let qty = searchParams.get('qty');
+    //localStorage.setItem('cartItems', JSON.stringify((getState().cart.cartItems)));
+    
+    //const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     if(id) {
+    //         dispatch(addToCart({id: id, qty: qty}));
+    //     }
+    // }, [dispatch, id, qty])
   return (
     <div>
         <h1>Cart Screen</h1>
