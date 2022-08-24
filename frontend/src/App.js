@@ -1,11 +1,16 @@
 import React from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import CartScreen from './screens/CartScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
+
 function App() {
   return (
     <BrowserRouter>
+    <ToastContainer />
     <div className="grid-container">
             <header className="row">
                 <div>
