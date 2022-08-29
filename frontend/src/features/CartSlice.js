@@ -12,13 +12,20 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart (state, action) {
-            const { product, qty } = action.payload;
+            const { product, qty, act } = action.payload;
             const itemIndex = state.cartItems.findIndex((item) => item._id === product._id);
             if(itemIndex >= 0) {
-                state.cartItems[itemIndex].cartQty += qty;
-                toast.info("Increated the product quantity by " + qty, {
-                    position: "bottom-left"
-                });
+                if (act === "add") {
+                    state.cartItems[itemIndex].cartQty += qty;
+                    toast.info("Increated the product quantity by " + qty, {
+                        position: "bottom-left"
+                    });
+                } else if (act === "update") {
+                    state.cartItems[itemIndex].cartQty = qty;
+                    toast.info("Updated the product quantity by " + qty, {
+                        position: "bottom-left"
+                    });
+                }
             } else {
                 const tempProduct = {...product, cartQty: qty}
                 state.cartItems.push(tempProduct);

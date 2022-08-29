@@ -6,8 +6,11 @@ import { ToastContainer } from 'react-toastify';
 import CartScreen from './screens/CartScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
+import { useSelector } from 'react-redux';
 
 function App() {
+
+  const cart = useSelector((state) => state.cart);
   return (
     <BrowserRouter>
     <ToastContainer />
@@ -18,6 +21,9 @@ function App() {
                 </div>
                 <div>
                     <Link to="/cart">Cart</Link>
+                    {cart.cartItems.length > 0 && (
+                      <span className="badge">{cart.cartItems.length}</span>
+                    )}
                     <Link to="/signin">Sign In</Link>
                 </div>
             </header>
