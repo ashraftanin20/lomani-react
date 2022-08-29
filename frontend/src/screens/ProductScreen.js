@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import Rating from '../components/Rating';
@@ -13,15 +13,15 @@ export default function ProductScreen() {
     const { id } = useParams();
     const { data, error, isLoading } = useGetProductDetailsQuery(id);
     const [qty, setQty] = useState(1);
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchProductDetails(id));
     }, [dispatch, id, qty]);
 
     const addToCartHandler = () => {
-        dispatch(addToCart({product: data, qty: qty}));
-        navigate(`/cart/${id}?qty=${qty}`);
+        dispatch(addToCart({product: data, qty: qty, act: "add"}));
+        //navigate(`/cart/${id}?qty=${qty}`);
         //history.push("/cart");
     }
         return (
