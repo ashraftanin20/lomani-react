@@ -2,15 +2,16 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import MessageBox from '../components/MessageBox';
-import { addToCart } from '../features/CartSlice';
+import { addToCart, removeFromCart } from '../features/CartSlice';
 export default function CartScreen() {
    
     const cart = useSelector((state) => state.cart);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const removeFromCartHandler = () => {
+    const removeFromCartHandler = (item) => {
       //delete action
+      dispatch(removeFromCart(item));
     }
 
     const checkoutHandler = () => {
@@ -54,7 +55,7 @@ export default function CartScreen() {
                   </div>
                   <div>{item.price}</div>
                   <div>
-                    <button type="button" onClick={() => removeFromCartHandler(item._id)}>Remove</button>
+                    <button type="button" onClick={() => removeFromCartHandler(item)}>Remove</button>
                   </div>
                   </div>
                 </li>
