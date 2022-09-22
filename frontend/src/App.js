@@ -6,12 +6,21 @@ import { ToastContainer } from 'react-toastify';
 import CartScreen from './screens/CartScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SigninScreen from './screens/SigninScreen';
+import { logoutUser } from './features/authSlice';
 
 function App() {
 
   const cart = useSelector((state) => state.cart);
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { userInfo } = auth;
+
+  const signoutHandle = () => {
+    dispatch(logoutUser(null));
+  }
+
   return (
     <BrowserRouter>
     <ToastContainer />
@@ -25,7 +34,17 @@ function App() {
                     {cart.cartItems.length > 0 && (
                       <span className="badge">{cart.cartItems.length}</span>
                     )}
-                    <Link to="/signin">Sign In</Link>
+                    {userInfo ? (
+                      <div className="dropdown">
+                        <Link to="#">{userInfo.name} <i className="fa fa-caret-down"></i>{' '}
+                        </Link>
+                        <ul className="dropdown-content">
+                          <Link to="#signout" onClick={signoutHandle} >Sign Out</Link>
+                        </ul>
+                      </div>
+                      ): (<Link to="/signin">Sign In</Link>)
+                    }
+                    
                 </div>
             </header>
             <main>
