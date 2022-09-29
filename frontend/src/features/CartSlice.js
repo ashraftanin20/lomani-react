@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 
 const initialState = {
     cartItems: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [],
+    shippingAddress: localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')) : {},
     cartTotalQuantity: 0,
     cartTotalAmount: 0,
 }
@@ -42,10 +43,13 @@ const cartSlice = createSlice({
             )
             state.cartItems = filteredCartItems;
             localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+        },
+        saveShippingAddress(state, action) {
+            localStorage.setItem('shippingAddress', JSON.stringify(action.payload));
         }
     },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, saveShippingAddress } = cartSlice.actions;
 
 export default cartSlice.reducer;
