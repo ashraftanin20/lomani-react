@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import SigninScreen from './screens/SigninScreen';
 import { logoutUser } from './features/authSlice';
 import RegisterScreen from './screens/RegisterScreen';
+import ShippingAddressScreen from './screens/ShippingAddressScreen';
 
 function App() {
 
@@ -56,6 +57,7 @@ function App() {
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/register" element={<RegisterScreen />} />
               <Route path="/cart/" element={<CartScreen />} />
+              <Route path='/shipping' element={<ShippingAddressScreen />} />
               
             </Routes>
             </main>
