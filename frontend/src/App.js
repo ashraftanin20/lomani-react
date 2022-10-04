@@ -11,6 +11,7 @@ import SigninScreen from './screens/SigninScreen';
 import { logoutUser } from './features/authSlice';
 import RegisterScreen from './screens/RegisterScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
+import PaymentMethodScreen from './screens/PaymentMethodScreen';
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
               <Route path="/register" element={<RegisterScreen />} />
               <Route path="/cart/" element={<CartScreen />} />
               <Route path='/shipping' element={<ShippingAddressScreen />} />
+              <Route path='/payment' element={<PaymentMethodScreen />} />
               
             </Routes>
             </main>
