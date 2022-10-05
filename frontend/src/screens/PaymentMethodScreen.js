@@ -9,11 +9,7 @@ export default function PaymentMethodScreen() {
     const { shippingAddress } = cart;
     const navigate = useNavigate();
    
-    useEffect(() => {
-        if (!shippingAddress.address) {
-            navigate('/shipping');
-        }
-    }, [navigate, shippingAddress.address])
+   
     const [paymentMethod, setPaymentMethod] = useState('PayPal');
     
     const dispatch = useDispatch();
@@ -22,6 +18,11 @@ export default function PaymentMethodScreen() {
         dispatch(savePaymentMethod(paymentMethod));
         navigate('/placeorder');
     }
+    useEffect(() => {
+        if (!shippingAddress.address) {
+            navigate('/shipping');
+        }
+    }, [navigate, shippingAddress])
   return (
     <div>
         <CheckoutSteps step1 step2 step3 ></CheckoutSteps>
