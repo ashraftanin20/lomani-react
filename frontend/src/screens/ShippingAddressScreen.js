@@ -5,32 +5,33 @@ import CheckoutSteps from '../components/CheckoutSteps'
 import { saveShippingAddress } from '../features/CartSlice';
 
 export default function ShippingAddressScreen() {
-
-    const navigate = useNavigate();
-    const auth = useSelector(state => state.auth);
-    const { userInfo } = auth;
+    
     const cart = useSelector(state => state.cart);
     const { shippingAddress } = cart;
-    
-    useEffect(() => {
-        if(!userInfo) {
-            navigate('/signin');
-        }
-    }, [navigate, userInfo]);
-    
     const [fullName, setFullName] = useState(shippingAddress.fullName);
     const [address, setAddress] = useState(shippingAddress.address);
     const [city, setCity] = useState(shippingAddress.city);
     const [postalCode, setPostalCode] = useState(shippingAddress.postalCode);
     const [country, setCountry] = useState(shippingAddress.country);
+    const navigate = useNavigate();
+    const auth = useSelector(state => state.auth);
+    const { userInfo } = auth;
+    
+    
     const dispatch = useDispatch();
-
+    
     const submitHandler = (e) => {
         e.preventDefault();
         //TODO: dispatch save shipping address action
         dispatch(saveShippingAddress({fullName, address, city, postalCode, country}));
         navigate('/payment');
     }
+
+    useEffect(() => {
+        if(!userInfo) {
+            navigate('/signin');
+        }
+    }, [navigate, userInfo]);
   return (
     <div>
         <CheckoutSteps step1 step2></CheckoutSteps>
@@ -44,7 +45,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     id="fullName"
                     placeholder="Enter full name"
-                    value={fullName}
+                    value={fullName || ''}
                     onChange={(e) => setFullName(e.target.value)}
                     required
                 ></input>
@@ -55,7 +56,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     id="address"
                     placeholder="Enter Address"
-                    value={address}
+                    value={address || ''}
                     onChange={(e) => setAddress(e.target.value)}
                     required
                 ></input>
@@ -66,7 +67,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     id="city"
                     placeholder="Enter City"
-                    value={city}
+                    value={city || ''}
                     onChange={(e) => setCity(e.target.value)}
                     required
                 ></input>
@@ -77,7 +78,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     id="postalCode"
                     placeholder="Enter postal code"
-                    value={postalCode}
+                    value={postalCode || ''}
                     onChange={(e) => setPostalCode(e.target.value)}
                     required
                 ></input>
@@ -88,7 +89,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     id="country"
                     placeholder="Enter Country"
-                    value={country}
+                    value={country || ''}
                     onChange={(e) => setCountry(e.target.value)}
                     required
                 ></input>

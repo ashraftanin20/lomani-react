@@ -12,6 +12,7 @@ import { logoutUser } from './features/authSlice';
 import RegisterScreen from './screens/RegisterScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 
 function App() {
 
@@ -60,7 +61,7 @@ function App() {
               <Route path="/cart/" element={<CartScreen />} />
               <Route path='/shipping' element={<ShippingAddressScreen />} />
               <Route path='/payment' element={<PaymentMethodScreen />} />
-              
+              <Route path='/placeorder' element={<PlaceOrderScreen />} />
             </Routes>
             </main>
             <footer className="row center">
