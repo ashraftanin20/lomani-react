@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps'
+import { createOrder, resetOrder } from '../features/OrderSlice';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
 export default function PlaceOrderScreen() {
     const cart = useSelector(state => state.cart);
@@ -13,14 +16,25 @@ export default function PlaceOrderScreen() {
     const shippingPrice = itemsPrice > 100 ? toPrice(0) : toPrice(10);
     const taxPrice = toPrice(0.15 * itemsPrice);
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
-    const placeOrderHandler = () => {
+    const dispatch = useDispatch();
+    const order = useSelector((state) => state.order);
+    //const {orderData} = order; 
+    
+    
+    const placeOrderHandler = (e) => {
         //TODO: dispatch place order action
+        //e.preventDefault();
+        dispatch(createOrder({cart, itemsPrice, taxPrice, shippingPrice, totalPrice, cartItems: cart.cartItems}));
     }
     useEffect(() => {
         if(!cart.paymentMethod) {
             navigate('/payment');
         }
-    },[cart.paymentMethod, navigate]);
+        if(order.orderStatus === "fulfilled") {
+            navigate(`/order/${order.orderData.order._id}`);
+            dispatch(resetOrder());
+        }
+    },[cart.paymentMethod, navigate, dispatch, order.orderStatus, order.orderData]);
   return (
     <div>
         <CheckoutSteps step1 step2 step3 step4 ></CheckoutSteps>
@@ -112,6 +126,10 @@ export default function PlaceOrderScreen() {
                                 Place Order
                             </button>
                         </li>
+                        {
+                            order.orderStatus === "pending" ?? <LoadingBox></LoadingBox>
+                        }
+                        { order.orderStatus === "rejected" ?? <MessageBox variant="danger">{order.orderError}</MessageBox>}
                     </ul>
                 </div>
             </div>
