@@ -6,6 +6,7 @@ import productDetailsReducer from './features/ProductDetailsSlice';
 import { productsApi } from './features/ProductsApi';
 import authReducer, { loadUser } from './features/authSlice';
 import orderReducer from './features/OrderSlice';
+import orderDetailsReducder from './features/OrderDetailsSlice';
 
 
 
@@ -17,6 +18,7 @@ const store = configureStore({
         cart: cartReducer,
         auth: authReducer,
         order: orderReducer,
+        orderDetails: orderDetailsReducder,
     },
     middleware: (getDefualtMiddleware) => {
         return getDefualtMiddleware().concat(productsApi.middleware);
