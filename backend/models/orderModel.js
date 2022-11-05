@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-    orderItem: [
+    orderItems: [
         {
             name: {type: String, required: true},
-            qty: {type: Number, required: true},
+            cartQty: {type: Number, required: true},
             image: {type: String, required: true},
             price: {type: Number, required: true},
             product: {

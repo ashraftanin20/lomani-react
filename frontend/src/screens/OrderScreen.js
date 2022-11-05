@@ -1,44 +1,27 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom';
-import CheckoutSteps from '../components/CheckoutSteps'
-import { createOrder, resetOrder } from '../features/OrderSlice';
+import { Link, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { detailsOrder } from '../features/OrderDetailsSlice';
 
-export default function PlaceOrderScreen() {
-    const cart = useSelector(state => state.cart);
-    const navigate = useNavigate();
-    const toPrice = (num) => Number(num.toFixed(2));
-    const itemsPrice = toPrice(
-        cart.cartItems.reduce((a, c) => a + c.cartQty * c.price, 0)
-    );
-    const shippingPrice = itemsPrice > 100 ? toPrice(0) : toPrice(10);
-    const taxPrice = toPrice(0.15 * itemsPrice);
-    const totalPrice = itemsPrice + taxPrice + shippingPrice;
+export default function OrderScreen() {
+    const { id } = useParams();
     const dispatch = useDispatch();
-    const order = useSelector((state) => state.order);
-    //const {orderData} = order; 
     
-    
-    const placeOrderHandler = (e) => {
-        //TODO: dispatch place order action
-        //e.preventDefault();
-        dispatch(createOrder({...cart, itemsPrice, taxPrice, shippingPrice, totalPrice, cartItems: cart.cartItems}));
-    }
+    const orderDetails = useSelector((state) => state.orderDetails);
+    const { orderDetailsError, orderDetailsData, orderDetailsStatus} = orderDetails;
     useEffect(() => {
-        if(!cart.paymentMethod) {
-            navigate('/payment');
-        }
-        if(order.orderStatus === "fulfilled") {
-            navigate(`/order/${order.orderData.order._id}`);
-            dispatch(resetOrder());
-        }
-    },[cart.paymentMethod, navigate, dispatch, order.orderStatus, order.orderData]);
-  return (
-    <div>
-        <CheckoutSteps step1 step2 step3 step4 ></CheckoutSteps>
+      dispatch(detailsOrder(id));
+    },[dispatch, id]);
     
+    
+  return orderDetailsStatus === "pending" ? (<LoadingBox>Loading...</LoadingBox>)
+        : orderDetailsStatus === "rejected" ? (
+        <MessageBox variant="danger">{orderDetailsError}</MessageBox> 
+        ) : orderDetailsStatus === "fulfilled" ? (
+    <div>
+        <h1>Order {orderDetailsData._id}</h1>
         <div className="row top">
             <div className="col-2">
                 <ul>
@@ -46,17 +29,17 @@ export default function PlaceOrderScreen() {
                         <div className="card card-body">
                             <h2>Shipping</h2>
                             <p>
-                                <strong>Name:</strong> {cart.shippingAddress.fullName} <br />
-                                <strong>Address:</strong> {cart.shippingAddress.address},
-                                {cart.shippingAddress.city}, {cart.shippingAddress.postalCode}
-                                ,{cart.shippingAddress.country}
+                                <strong>Name:</strong> {orderDetailsData.shippingAddress.fullName} <br />
+                                <strong>Address:</strong> {orderDetailsData.shippingAddress.address},
+                                {orderDetailsData.shippingAddress.city}, {orderDetailsData.shippingAddress.postalCode}
+                                ,{orderDetailsData.shippingAddress.country}
                             </p>
                         </div>
                     </li>
                     <li>
                         <div className="card card-body">
                             <h2>Payment</h2>
-                            <p><strong>Method:</strong> {cart.paymentMethod}</p>
+                            <p><strong>Method:</strong> {orderDetailsData.paymentMethod}</p>
                         </div>
                     </li>
                     <li>
@@ -64,8 +47,8 @@ export default function PlaceOrderScreen() {
                             <h2>Order Items</h2>
                             <ul>
                             {
-                            cart.cartItems.map((item) => (
-                                <li key={item.product}>
+                            orderDetailsData.orderItems.map((item) => (
+                                <li key={item._id}>
                                     <div className="row">
                                         <div>
                                         <img className="small"
@@ -74,7 +57,7 @@ export default function PlaceOrderScreen() {
                                         ></img>
                                         </div>
                                         <div className="min-30">
-                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                            <Link to={`/product/${item._id}`}>{item.name}</Link>
                                         </div>
                                         <div>{item.cartQty} x {item.price} = {item.cartQty * item.price}</div>
                                     </div>
@@ -94,19 +77,19 @@ export default function PlaceOrderScreen() {
                         <li>
                             <div className="row">
                                 <div>Item</div>
-                                <div>${itemsPrice.toFixed(2)}</div>
+                                <div>${orderDetailsData.itemsPrice.toFixed(2)}</div>
                             </div>
                         </li>
                         <li>
                             <div className="row">
                                 <div>Shipping</div>
-                                <div>${shippingPrice.toFixed(2)}</div>
+                                <div>${orderDetailsData.shippingPrice.toFixed(2)}</div>
                             </div>
                         </li>
                         <li>
                             <div className="row">
                                 <div>Tax</div>
-                                <div>${taxPrice.toFixed(2)}</div>
+                                <div>${orderDetailsData.taxPrice.toFixed(2)}</div>
                             </div>
                         </li>
                         <li>
@@ -114,26 +97,15 @@ export default function PlaceOrderScreen() {
                                 <div>
                                     <strong>Order Total</strong>
                                 </div>
-                                <div><strong>${totalPrice.toFixed(2)}</strong></div>
+                                <div><strong>${orderDetailsData.totalPrice.toFixed(2)}</strong></div>
                             </div>
                         </li>
-                        <li>
-                            <button type="button" 
-                                    onClick={placeOrderHandler} 
-                                    className="primary block"
-                                    disabled={cart.cartItems.length === 0}
-                                    >
-                                Place Order
-                            </button>
-                        </li>
-                        {
-                            order.orderStatus === "pending" ?? <LoadingBox></LoadingBox>
-                        }
-                        { order.orderStatus === "rejected" ?? <MessageBox variant="danger">{order.orderError}</MessageBox>}
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+  ) : (
+    <p></p>
   )
 }

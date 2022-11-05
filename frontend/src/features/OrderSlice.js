@@ -8,11 +8,8 @@ export const createOrder = createAsyncThunk("order/createOrder",
        
     
     try {
-        //const dispatch = useDispatch();
         const { auth } = getState();
         const { userInfo } = auth;
-        //console.log(userInfo.token);
-        //const { userInfo } = auth;
         const config = {
             headers: {
                 Authorization: `Bearer ${userInfo.token}`,
@@ -20,8 +17,8 @@ export const createOrder = createAsyncThunk("order/createOrder",
         }
         const { data } = await axios.post("/api/orders", {
             orderItems: values.cartItems,
-            shippingAddress: values.cart.shippingAddress,
-            paymentMethod: values.cart.paymentMethod,
+            shippingAddress: values.shippingAddress,
+            paymentMethod: values.paymentMethod,
             itemsPrice: values.itemsPrice,
             shippingPrice: values.shippingPrice,
             taxPrice: values.taxPrice,
@@ -34,9 +31,11 @@ export const createOrder = createAsyncThunk("order/createOrder",
         return data;
 
     } catch(err){
-        console.log(err.response.data);
-        return rejectWithValue(JSON.stringify(err.response.data));
-        
+        const message = err.response && err.response.data.message 
+                        ? err.response.data.message
+                        : err.message;
+        //dispatch({type: detailsOrder.rejected, payload: message});
+        return rejectWithValue(JSON.stringify(message)); 
     }
 });
 

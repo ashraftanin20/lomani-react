@@ -28,7 +28,7 @@ export default function CartScreen() {
           <ul>
             {
               cart.cartItems.map((item) => (
-                <li key={item._id}>
+                <li key={item.product}>
                   <div className="row">
                     <div>
                       <img className="small"
@@ -37,7 +37,7 @@ export default function CartScreen() {
                       ></img>
                     </div>
                   <div className="min-30">
-                    <Link to={`/product/${item._id}`}>{item.name}</Link>
+                    <Link to={`/product/${item.product}`}>{item.name}</Link>
                   </div>
                   <div>
                     <select value={item.cartQty} 

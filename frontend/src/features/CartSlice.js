@@ -15,7 +15,9 @@ const cartSlice = createSlice({
     reducers: {
         addToCart (state, action) {
             const { product, qty, act } = action.payload;
-            const itemIndex = state.cartItems.findIndex((item) => item._id === product._id);
+           
+            const pID = act === "update" ? product.product : product._id;
+            const itemIndex = state.cartItems.findIndex((item) => item.product === pID);
             if(itemIndex >= 0) {
                 if (act === "add") {
                     state.cartItems[itemIndex].cartQty += qty;
@@ -29,7 +31,15 @@ const cartSlice = createSlice({
                     });
                 }
             } else {
-                const tempProduct = {...product, cartQty: qty}
+                //const tempProduct = {...product, product: product._id, cartQty: qty}
+                const tempProduct = {
+                    name: product.name,
+                    image: product.image,
+                    price: product.price,
+                    countInStock: product.countInStock,
+                    product: product._id,
+                    cartQty: qty,
+                }
                 state.cartItems.push(tempProduct);
                 toast.success("Added the product to cart", {
                     position: "bottom-left"
@@ -40,7 +50,7 @@ const cartSlice = createSlice({
         removeFromCart(state, action) {
             //const { itemId } = action.payload;
             const filteredCartItems = state.cartItems.filter(
-                cartItem => cartItem._id !== action.payload._id
+                cartItem => cartItem.product !== action.payload.product
             )
             state.cartItems = filteredCartItems;
             localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
