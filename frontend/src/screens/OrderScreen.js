@@ -14,6 +14,11 @@ export default function OrderScreen() {
     
     const orderDetails = useSelector((state) => state.orderDetails);
     const { orderDetailsError, orderDetailsData, orderDetailsStatus} = orderDetails;
+    
+    const successPaymentHandler = () => {
+      //TODO implement successpaymenthandler
+    }
+
     useEffect(() => {
       const addPayPalScript = async () => {
         const { data } = await axios.get('/api/config/paypal');
@@ -26,7 +31,7 @@ export default function OrderScreen() {
         };
         document.body.appendChild(script);
       };
-      if (!orderDetailsData._id) {
+      if (!orderDetailsData) {
         dispatch(detailsOrder(id));
       } else {
         if (!orderDetailsData.isPaid) {
@@ -38,11 +43,7 @@ export default function OrderScreen() {
         }
       }
       
-    },[dispatch, id, orderDetailsData._id, orderDetailsData.isPaid, sdkReady]);
-    
-    const successPaymentHandler = () => {
-      //TODO implement successpaymenthandler
-    }
+    },[dispatch, id, orderDetailsData, sdkReady]);
     
   return orderDetailsStatus === "pending" ? (<LoadingBox>Loading...</LoadingBox>)
         : orderDetailsStatus === "rejected" ? (
