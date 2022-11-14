@@ -40,7 +40,7 @@ export const createOrder = createAsyncThunk("order/createOrder",
 });
 
 const initialState = {
-    orderData: "",
+    
     orderError: "",
     orderStatus: "",
 };
