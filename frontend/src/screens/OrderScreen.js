@@ -12,11 +12,15 @@ export default function OrderScreen() {
     const [sdkReady, setSdkReady] = useState(false);
     const dispatch = useDispatch();
     
+    const payOrder = useSelector((state) => state.payOrder );
+    const { payOrderError, payOrderStatus, payOrderData } = payOrder;
     const orderDetails = useSelector((state) => state.orderDetails);
     const { orderDetailsError, orderDetailsData, orderDetailsStatus} = orderDetails;
     
-    const successPaymentHandler = () => {
+    const successPaymentHandler = (paymentResult) => {
       //TODO implement successpaymenthandler
+      dispatch(payOrder({orderDetailsData, paymentResult}));
+
     }
 
     useEffect(() => {
@@ -31,7 +35,7 @@ export default function OrderScreen() {
         };
         document.body.appendChild(script);
       };
-      if (!orderDetailsData) {
+      if (!orderDetailsData || payOrderStatus === 'fulfilled' || (orderDetailsData && orderDetailsData._id !== id)) {
         dispatch(detailsOrder(id));
       } else {
         if (!orderDetailsData.isPaid) {
@@ -63,12 +67,24 @@ export default function OrderScreen() {
                                 {orderDetailsData.shippingAddress.city}, {orderDetailsData.shippingAddress.postalCode}
                                 ,{orderDetailsData.shippingAddress.country}
                             </p>
+                            {orderDetailsData.isDelivered ? (
+                              <MessageBox variant="success">Delivered at: {orderDetailsData.deliveredAt}</MessageBox> )
+                              : (
+                                <MessageBox variant="danger">Not Delivered</MessageBox>
+                              )
+                            }
                         </div>
                     </li>
                     <li>
                         <div className="card card-body">
                             <h2>Payment</h2>
                             <p><strong>Method:</strong> {orderDetailsData.paymentMethod}</p>
+                            {orderDetailsData.isPaid ? (
+                              <MessageBox variant="success">Paid at: {orderDetailsData.paidAt}</MessageBox> )
+                              : (
+                                <MessageBox variant="danger">Not Paid</MessageBox>
+                              )
+                            }
                         </div>
                     </li>
                     <li>
@@ -134,10 +150,16 @@ export default function OrderScreen() {
                             <li>
                               {!sdkReady ? (<LoadingBox></LoadingBox>) :
                               (
+                                <>
+                                {payOrderStatus === 'rejected' && (
+                                  <MessageBox variant="danger">{payOrderError}</MessageBox>
+                                  )}
+                                {payOrderStatus === 'pending' && (<LoadingBox></LoadingBox>)}
                                 <PayPalButton 
                                   amount={orderDetailsData.totalPrice}
                                   onSuccess={successPaymentHandler}
                                 ></PayPalButton>
+                                </>
                               )
                               }
                             </li>
