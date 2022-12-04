@@ -14,6 +14,7 @@ import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
 
 function App() {
 
@@ -44,7 +45,8 @@ function App() {
                         <Link to="#">{userInfo.name} <i className="fa fa-caret-down"></i>{' '}
                         </Link>
                         <ul className="dropdown-content">
-                          <Link to="#signout" onClick={signoutHandle} >Sign Out</Link>
+                          <li><Link to='/orderhistory' >Order History</Link></li>
+                          <li><Link to="#signout" onClick={signoutHandle} >Sign Out</Link></li>
                         </ul>
                       </div>
                       ): (<Link to="/signin">Sign In</Link>)
@@ -63,6 +65,7 @@ function App() {
               <Route path='/shipping' element={<ShippingAddressScreen />} />
               <Route path='/payment' element={<PaymentMethodScreen />} />
               <Route path='/placeorder' element={<PlaceOrderScreen />} />
+              <Route path='/orderhistory' element={<OrderHistoryScreen />} />
               <Route path='/order/:id' element={<OrderScreen />} />
             </Routes>
             </main>
