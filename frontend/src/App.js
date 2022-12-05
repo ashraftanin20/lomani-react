@@ -15,6 +15,7 @@ import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 function App() {
 
@@ -46,6 +47,7 @@ function App() {
                         </Link>
                         <ul className="dropdown-content">
                           <li><Link to='/orderhistory' >Order History</Link></li>
+                          <li><Link to='/userprofile'>MyProfile</Link></li>
                           <li><Link to="#signout" onClick={signoutHandle} >Sign Out</Link></li>
                         </ul>
                       </div>
@@ -67,6 +69,7 @@ function App() {
               <Route path='/placeorder' element={<PlaceOrderScreen />} />
               <Route path='/orderhistory' element={<OrderHistoryScreen />} />
               <Route path='/order/:id' element={<OrderScreen />} />
+              <Route path='/userprofile' element={<ProfileScreen />} />
             </Routes>
             </main>
             <footer className="row center">

@@ -38,6 +38,8 @@ export const loginUser = createAsyncThunk(
         }
 });
 
+
+
 const initialState = {
     userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : "",
     registerStatus: "",
@@ -122,6 +124,10 @@ const authSlice = createSlice({
         });
     }
 });
+
+// export const detailsUser = (userId) => async (dispatch, getState) => {
+
+// }
 
 export const { loadUser, logoutUser } = authSlice.actions;
 
