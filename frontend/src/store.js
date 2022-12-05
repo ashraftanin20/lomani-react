@@ -9,6 +9,7 @@ import orderReducer from './features/OrderSlice';
 import orderDetailsReducder from './features/OrderDetailsSlice';
 import payOrderReducer from './features/payOrderSlice';
 import OrderHistorySlice from './features/OrderHistorySlice';
+import ProfileSlice from './features/ProfileSlice';
 
 
 
@@ -19,6 +20,7 @@ const store = configureStore({
         [productsApi.reducerPath]: productsApi.reducer,
         cart: cartReducer,
         auth: authReducer,
+        userProfile: ProfileSlice,
         order: orderReducer,
         orderDetails: orderDetailsReducder,
         orderHistory: OrderHistorySlice,
