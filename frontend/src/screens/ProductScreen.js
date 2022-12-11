@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import Rating from '../components/Rating';
 import { addToCart } from '../features/CartSlice';
 import { fetchProductDetails } from '../features/ProductDetailsSlice';
-import { useGetProductDetailsQuery } from '../features/ProductsApi';
 
 export default function ProductScreen() {
     const dispatch = useDispatch();
     const { id } = useParams();
-    const { data, error, isLoading } = useGetProductDetailsQuery(id);
+    const productDetails = useSelector(state => state.productDetails);
+    const { product, error, status } = productDetails;
     const [qty, setQty] = useState(1);
     //const navigate = useNavigate();
 
@@ -20,41 +20,41 @@ export default function ProductScreen() {
     }, [dispatch, id, qty]);
 
     const addToCartHandler = () => {
-        dispatch(addToCart({product: data, qty: qty, act: "add"}));
+        dispatch(addToCart({product: product, qty: qty, act: "add"}));
         //navigate(`/cart/${id}?qty=${qty}`);
         //history.push("/cart");
     }
         return (
             <div>
             { 
-                isLoading ? (<LoadingBox></LoadingBox>) : 
-                 error ? (<MessageBox variant="danger">Problem loading product details.</MessageBox>) : 
+                status === "pending" ? (<LoadingBox>Loading...</LoadingBox>) : 
+                 status === "rejected" ? (<MessageBox variant="danger">{error}</MessageBox>) : 
                 ( 
                     <div>
                 <Link to="/">Back to Products</Link>
                 <div className="row top">
                     <div className="col-2">
-                        <img className="large" src={data.image} alt={data.name} />
+                        <img className="large" src={product.image} alt={product.name} />
                     </div>
                     <div className="col-1">
                         <ul>
                             <li>
-                                <h1>{data.name}</h1>
+                                <h1>{product.name}</h1>
                             </li>
                         </ul>
                         <ul>
                             <li>
                                 <Rating
-                                    rating={data.rating}
-                                    numReviews={data.numReviews} 
+                                    rating={product.rating}
+                                    numReviews={product.numReviews} 
                                 ></Rating>
                             </li>
                             <li>
-                                Price: ${data.price} 
+                                Price: ${product.price} 
                             </li>
                             <li>
                                 Description: 
-                                <p>{data.description}</p>
+                                <p>{product.description}</p>
                             </li>
                         </ul>
                     </div>
@@ -64,14 +64,14 @@ export default function ProductScreen() {
                                 <li>
                                     <div className="row">
                                         <div>Price</div>
-                                        <div className="price">${data.price}</div>
+                                        <div className="price">${product.price}</div>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="row">
                                         <div>Status</div>
                                         <div>
-                                            {data.countInStock > 0 ? (
+                                            {product.countInStock > 0 ? (
                                                     <span className="success">In Stock</span>
                                                 ) : (
                                                     <span className="danger">Unavailable</span>
@@ -81,13 +81,13 @@ export default function ProductScreen() {
                                     </div>
                                 </li>
                                 {
-                                    data.countInStock > 0 && (
+                                    product.countInStock > 0 && (
                                         <>
                                         <li className="row">
                                             <div>Qty</div>
                                             <div>
                                                 <select type="number" value={qty} onChange={e => setQty(parseInt(e.target.value))}>
-                                                    {[...Array(data.countInStock).keys()].map((x) => (
+                                                    {[...Array(product.countInStock).keys()].map((x) => (
                                                             <option key={x + 1} value={x + 1}> {x + 1}</option>
                                                         )
                                                     )}

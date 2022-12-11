@@ -1,18 +1,48 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchProductDetails = createAsyncThunk("products/fetchProductDetails", async (productId) => {
+export const fetchProductDetails = createAsyncThunk("products/fetchProductDetails", async (productId, {rejectWithValue}) => {
+    try {
     const response = await axios.get(`/api/products/${productId}`);
     return response.data;
-})
+    } catch(err){
+        const message = err.response && err.response.data.message 
+                        ? err.response.data.message
+                        : err.message;
+        //dispatch({type: detailsOrder.rejected, payload: message});
+        return rejectWithValue(JSON.stringify(message)); 
+        }
+});
+
+export const createProduct = createAsyncThunk('product/createProduct', async (values, {getState, rejectWithValue}) => {
+
+    try {
+        const { auth } = getState();
+        const { userInfo } = auth;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+            }
+        }
+        const { data } = await axios.post('/api/products', {}, config);
+        return data.product;
+    } catch(err){
+            const message = err.response && err.response.data.message 
+                            ? err.response.data.message
+                            : err.message;
+            //dispatch({type: detailsOrder.rejected, payload: message});
+            return rejectWithValue(JSON.stringify(message)); 
+        }
+});
 
 const initialState = {
     status: null,
+    error: "",
     product: {},
 }
 
 const productDetailsSlice = createSlice({
-    name: "product",
+    name: "productDetails",
     initialState,
     reducers: {},
     extraReducers: {
@@ -20,11 +50,24 @@ const productDetailsSlice = createSlice({
             state.status = "pending";
         },
         [fetchProductDetails.fulfilled]: (state, action) => {
-            state.status = "success";
+            state.status = "fulfilled";
             state.product = action.payload;
         },
         [fetchProductDetails.rejected]: (state, action) => {
             state.status = "rejected";
+            state.error = action.payload;
+        }
+        ,
+        [createProduct.pending]: (state, action) => {
+            state.status = "pending";
+        },
+        [createProduct.fulfilled]: (state, action) => {
+            state.status = "filfilled";
+            state.product = action.payload;
+        },
+        [createProduct.rejected]: (state, action) => {
+            state.status = "rejected";
+            state.error = action.payload;
         }
     }
 })

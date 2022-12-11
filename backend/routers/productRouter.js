@@ -2,6 +2,7 @@ import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import data from '../data.js';
 import Product from '../models/productModel.js';
+import { isAdmin, isAuth } from '../utils.js';
 
 const productRouter = express.Router();
 
@@ -30,4 +31,20 @@ productRouter.get(
         
     })
 );
+
+productRouter.post('/', isAuth, isAdmin, expressAsyncHandler(async(req, res) => {
+    const product = new Product({
+        name: 'Sample Name' + Date.now(),
+        image: '/images/p1.jpg',
+        price: 0,
+        category: 'Sample Category',
+        brand: 'Sample Brand',
+        countInStock: 0,
+        rating: 0,
+        numReviews: 0,
+        description: 'Sample description',
+    });
+    const createdProduct = await product.save();
+    res.send({ message: 'Prodcut created', product: createdProduct });
+}))
 export default productRouter;

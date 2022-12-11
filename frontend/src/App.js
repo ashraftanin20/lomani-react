@@ -17,6 +17,8 @@ import OrderScreen from './screens/OrderScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import PrivateRoutes from './components/PrivateRoutes';
+import AdminRoutes from './components/AdminRoutes';
+import ProductListScreen from './screens/ProductListScreen';
 
 function App() {
 
@@ -81,7 +83,7 @@ function App() {
             <main>
             <Routes>
               <Route path='/' element={<HomeScreen />} exact />
-              <Route path='/product/:id' element={<ProductScreen />} />
+              <Route path='/product/:id' element={<ProductScreen exact/>} />
               <Route path="/cart/:id" element={<CartScreen />} />
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/register" element={<RegisterScreen />} />
@@ -93,6 +95,9 @@ function App() {
               <Route path='/order/:id' element={<OrderScreen />} />
               <Route element={<PrivateRoutes />}>
                 <Route path='/userprofile' element={<ProfileScreen />} />
+              </Route>
+              <Route element={<AdminRoutes />}>
+                <Route path='/productlist' element={<ProductListScreen />} />
               </Route>
             </Routes>
             </main>
