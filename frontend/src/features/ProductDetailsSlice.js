@@ -38,31 +38,39 @@ export const createProduct = createAsyncThunk('product/createProduct', async (va
 const initialState = {
     status: null,
     error: "",
+    detailStatus:null,
+    detailError:"",
+    productDetail:{},
     product: {},
 }
 
 const productDetailsSlice = createSlice({
     name: "productDetails",
     initialState,
-    reducers: {},
+    reducers: {
+        resetProductDetails (state, action) {
+            return {
+            }
+        }
+    },
     extraReducers: {
         [fetchProductDetails.pending]: (state, action) => {
-            state.status = "pending";
+            state.detailStatus = "pending";
         },
         [fetchProductDetails.fulfilled]: (state, action) => {
-            state.status = "fulfilled";
-            state.product = action.payload;
+            state.detailStatus = "fulfilled";
+            state.productDetail = action.payload;
         },
         [fetchProductDetails.rejected]: (state, action) => {
-            state.status = "rejected";
-            state.error = action.payload;
+            state.detailStatus = "rejected";
+            state.detailError = action.payload;
         }
         ,
         [createProduct.pending]: (state, action) => {
             state.status = "pending";
         },
         [createProduct.fulfilled]: (state, action) => {
-            state.status = "filfilled";
+            state.status = "fulfilled";
             state.product = action.payload;
         },
         [createProduct.rejected]: (state, action) => {
@@ -72,4 +80,5 @@ const productDetailsSlice = createSlice({
     }
 })
 
+export const { resetProductDetails } = productDetailsSlice.actions;
 export default productDetailsSlice.reducer

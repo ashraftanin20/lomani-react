@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { createProduct } from '../features/ProductDetailsSlice';
+import { createProduct, resetProductDetails } from '../features/ProductDetailsSlice';
 import { productFetch } from '../features/ProductSlice';
 
 export default function ProductListScreen() {
@@ -28,11 +28,12 @@ export default function ProductListScreen() {
     }
 
     useEffect(() => {
-        if(statusLoading === "filfilled") {
-            navigate(`/product/${createdProduct._id}/edit`);
-        }
+        if(statusLoading === "fulfilled") {
+            dispatch(resetProductDetails());
+            navigate(`/product/${createdProduct._id}/edit`); 
+        }   
         dispatch(productFetch());
-    }, [createdProduct._id, dispatch, navigate, statusLoading]);
+    }, [createdProduct, dispatch, navigate, statusLoading]);
     
   return (
     <div>

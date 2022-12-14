@@ -30,7 +30,7 @@ const productSlice = createSlice({
             state.status = "pending";
         },
         [productFetch.fulfilled]: (state, action) => {
-            state.status = "filfilled";
+            state.status = "fulfilled";
             state.items = action.payload;
         },
         [productFetch.rejected]: (state, action) => {
