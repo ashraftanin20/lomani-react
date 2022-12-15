@@ -1,9 +1,10 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom'
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { fetchProductDetails, resetProductDetails } from '../features/ProductDetailsSlice';
+import { fetchProductDetails } from '../features/ProductDetailsSlice';
 import { resetUpdateProduct, updateProduct } from '../features/UpdateProductSlice';
 
 function ProductEditScreen() {
@@ -18,12 +19,38 @@ function ProductEditScreen() {
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+    const { userInfo } = auth;
 
     const productDetails = useSelector(state => state.productDetails);
     const { status, error, product } = productDetails;
     const productUpdate = useSelector(state => state.productUpdate);
     const {status: updateStatus, error: updateError } = productUpdate;
 
+    const [loadingUpload, setLoadingUpload] = useState(false);
+    const [errorUpload, setErrorUpload] = useState('');
+    const uploadFileHandler = async (e) => {
+        const file = e.target.value[0];
+        const bodyFormData = new FormData();
+        bodyFormData.append('image', file);
+        setLoadingUpload(true);
+        try {
+            const config = {
+                headers: {
+                    Authorization:`Bearer ${userInfo.token}`,
+                }
+            }
+            const { data } = await axios.post('/api/uploads', bodyFormData, config);
+            setImage(data);
+            setLoadingUpload(false);
+        } catch (err) {
+            const message = err.response && err.response.data.message 
+                            ? err.response.data.message
+                            : err.message;
+            setErrorUpload(message);
+            setLoadingUpload(false);
+        }
+    }
     const submitHandler = (e) => {
         // Implement onSubmit here
         e.preventDefault();
@@ -48,12 +75,12 @@ function ProductEditScreen() {
             setBrand(product.brand);
             setDescription(product.description);
         }
-    },[product, dispatch, id, updateStatus]);
+    },[product, dispatch, id, updateStatus, navigate]);
     return (
         <div>
                   {  updateStatus === "pending" && <LoadingBox>Loading...</LoadingBox> }
                   {  updateStatus === "rejected" && <MessageBox variant="danger">{updateError}</MessageBox> }
-            <form className="form" onSubmit={submitHandler}>
+            <form className="form" onSubmit={submitHandler} encType="multipart/form-data">
                 <div>
                     <h1>Edit Product</h1>
                 </div>
@@ -77,6 +104,14 @@ function ProductEditScreen() {
                         <input id='image' type='text' placeholder='Enter Image' value={image} 
                             onChange={(e) => setImage(e.target.value)}
                         ></input>
+                    </div>
+                    <div>
+                        <label htmlFor='imageFile'>Image File</label>
+                        <input type='file' id='imageFile' label='Choose Image'
+                            onChange={uploadFileHandler}
+                        ></input>
+                        {loadingUpload && <LoadingBox></LoadingBox>}
+                        {errorUpload && <MessageBox variant="danger">{errorUpload}</MessageBox>}
                     </div>
                     <div>
                         <label htmlFor='category'>Category</label>
