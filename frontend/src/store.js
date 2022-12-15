@@ -3,6 +3,8 @@ import cartReducer from './features/CartSlice';
 import { configureStore }from '@reduxjs/toolkit';
 import productsReducer from './features/ProductSlice';
 import productDetailsReducer from './features/ProductDetailsSlice';
+import productUpdateReducer from './features/UpdateProductSlice';
+import productCreateReducer from './features/CreateProductSlice';
 import { productsApi } from './features/ProductsApi';
 import authReducer, { loadUser } from './features/authSlice';
 import orderReducer from './features/OrderSlice';
@@ -17,6 +19,8 @@ const store = configureStore({
     reducer: {
         products: productsReducer,
         productDetails: productDetailsReducer,
+        productUpdate: productUpdateReducer,
+        productCreate: productCreateReducer,
         //[productsApi.reducerPath]: productsApi.reducer,
         createProduct: productDetailsReducer,
         cart: cartReducer,

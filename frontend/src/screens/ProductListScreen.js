@@ -3,33 +3,34 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { createProduct, resetProductDetails } from '../features/ProductDetailsSlice';
 import { productFetch } from '../features/ProductSlice';
+import { createProduct, resetCreateProduct } from '../features/CreateProductSlice';
 
 export default function ProductListScreen() {
     
     const products = useSelector(state => state.products);
     const { items, error, status } = products;
 
-    const productDetails = useSelector(state => state.productDetails);
+    const productCreate = useSelector(state => state.productCreate);
     const {
         product: createdProduct, 
         error: createdError, 
         status: statusLoading,
-    } = productDetails;
+    } = productCreate;
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const deleteHandler = () => {
         //TODO: implement delete action here!
     }
     
-    const createHandler = () => {
+    const createHandler = (e) => {
+        e.preventDefault();
         dispatch(createProduct());
     }
 
     useEffect(() => {
         if(statusLoading === "fulfilled") {
-            dispatch(resetProductDetails());
+            dispatch(resetCreateProduct());
             navigate(`/product/${createdProduct._id}/edit`); 
         }   
         dispatch(productFetch());
