@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { fetchProductDetails } from '../features/ProductDetailsSlice';
+import { fetchProductDetails, resetProductDetails } from '../features/ProductDetailsSlice';
+import { resetUpdateProduct, updateProduct } from '../features/UpdateProductSlice';
 
 function ProductEditScreen() {
     const { id } = useParams();
@@ -14,17 +15,29 @@ function ProductEditScreen() {
     const[countInStock, setCountInStock] = useState('');
     const[brand, setBrand] = useState('');
     const[description, setDescription] = useState('');
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
     const productDetails = useSelector(state => state.productDetails);
-    const { detailStatus: status, detailError: error, productDetail: product } = productDetails;
+    const { status, error, product } = productDetails;
+    const productUpdate = useSelector(state => state.productUpdate);
+    const {status: updateStatus, error: updateError } = productUpdate;
 
-    const submitHandler = () => {
+    const submitHandler = (e) => {
         // Implement onSubmit here
+        e.preventDefault();
+        dispatch(updateProduct({_id: id,
+                                    name, price, image, category, brand, countInStock, description})
+                );
     }
     useEffect(() => {
-        if (!product || (product._id !== id)) {
+        if(updateStatus === 'fulfilled') {
+            dispatch(resetUpdateProduct());
+            navigate('/productlist');
+        }
+        if (!product || (product._id !== id) || updateStatus === 'fulfilled') {
+            dispatch(resetUpdateProduct());
             dispatch(fetchProductDetails(id));
         } else {
             setName(product.name);
@@ -35,9 +48,11 @@ function ProductEditScreen() {
             setBrand(product.brand);
             setDescription(product.description);
         }
-    },[product, dispatch, id]);
+    },[product, dispatch, id, updateStatus]);
     return (
         <div>
+                  {  updateStatus === "pending" && <LoadingBox>Loading...</LoadingBox> }
+                  {  updateStatus === "rejected" && <MessageBox variant="danger">{updateError}</MessageBox> }
             <form className="form" onSubmit={submitHandler}>
                 <div>
                     <h1>Edit Product</h1>
