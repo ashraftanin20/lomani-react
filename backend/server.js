@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import productRouter from './routers/productRouter.js';
 import userRouter from './routers/userRouter.js';
 import orderRouter from './routers/orderRouter.js';
+import uploadRouter from './routers/uploadRouter.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
     res.send('Server is ready.');
 });
 
+app.use('/api/uploads', uploadRouter);
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
