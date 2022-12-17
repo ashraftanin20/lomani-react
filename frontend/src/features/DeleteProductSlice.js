@@ -1,18 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const createProduct = createAsyncThunk('product/createProduct', async (values, {getState, rejectWithValue}) => {
-
+export const deleteProduct = createAsyncThunk('product/deleteProduct', 
+                                    async (id, {rejectWithValue, getState}) => {
+    let { auth } = getState();
+    let { userInfo } = auth;
     try {
-        const { auth } = getState();
-        const { userInfo } = auth;
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.token}`,
-            }
+    
+    let config = {
+        headers: {
+            Authorization: `Bearer ${userInfo.token}`,
         }
-        const { data } = await axios.post('/api/products', {}, config);
-        return data.product;
+    }
+    
+    const { data } = await axios.delete(`/api/products/${id}`, config);
+    return data.product;
     } catch(err){
             const message = err.response && err.response.data.message 
                             ? err.response.data.message
@@ -28,11 +30,11 @@ const initialState = {
     product: {},
 }
 
-const createProductSlice = createSlice({
-    name: 'createProduct',
+const deleteProductSlice = createSlice({
+    name: 'deleteProduct',
     initialState,
     reducers: {
-        resetCreateProduct (state, action) {
+        resetDeleteProduct (state, action) {
             return {
                 ...state,
                 status: null,
@@ -42,19 +44,19 @@ const createProductSlice = createSlice({
         }
     },
     extraReducers: {    
-        [createProduct.pending]: (state, action) => {
+        [deleteProduct.pending]: (state, action) => {
             state.status = "pending";
         },
-        [createProduct.fulfilled]: (state, action) => {
+        [deleteProduct.fulfilled]: (state, action) => {
             state.status = "fulfilled";
             state.product = action.payload;
         },
-        [createProduct.rejected]: (state, action) => {
+        [deleteProduct.rejected]: (state, action) => {
             state.status = "rejected";
             state.error = action.payload;
         },
     }
 });
 
-export const { resetCreateProduct } = createProductSlice.actions;
-export default createProductSlice.reducer;
+export const { resetDeleteProduct } = deleteProductSlice.actions;
+export default deleteProductSlice.reducer;

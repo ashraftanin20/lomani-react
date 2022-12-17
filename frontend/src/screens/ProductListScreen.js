@@ -5,6 +5,7 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { productFetch } from '../features/ProductSlice';
 import { createProduct, resetCreateProduct } from '../features/CreateProductSlice';
+import { deleteProduct, resetDeleteProduct } from '../features/DeleteProductSlice';
 
 export default function ProductListScreen() {
     
@@ -18,10 +19,18 @@ export default function ProductListScreen() {
         status: statusLoading,
     } = productCreate;
     const navigate = useNavigate();
-    const dispatch = useDispatch()
-    const deleteHandler = () => {
-        //TODO: implement delete action here!
+    const dispatch = useDispatch();
+
+    const productDelete = useSelector(state => state.productDelete);
+    const {status: deleteStatus, error: deleteError} = productDelete;
+
+    const deleteHandler = (product) => {
+        if (window.confirm('Are you sure you want to delete the product?')) {
+            dispatch(deleteProduct(product._id));
+        }
+        
     }
+    
     
     const createHandler = (e) => {
         e.preventDefault();
@@ -32,9 +41,12 @@ export default function ProductListScreen() {
         if(statusLoading === "fulfilled") {
             dispatch(resetCreateProduct());
             navigate(`/product/${createdProduct._id}/edit`); 
-        }   
+        }  
+        if(deleteStatus === 'fulfilled') {
+            dispatch(resetDeleteProduct());
+        } 
         dispatch(productFetch());
-    }, [createdProduct, dispatch, navigate, statusLoading]);
+    }, [dispatch, createdProduct._id, navigate, statusLoading, deleteStatus]);
     
   return (
     <div>
@@ -44,11 +56,13 @@ export default function ProductListScreen() {
                 Create Product
             </button>
         </div>
-        {statusLoading === "pending" ? (<LoadingBox>Creating...</LoadingBox>) :
-        statusLoading === "rejected" ? (<MessageBox variant="danger">{createdError}</MessageBox>) : ""} 
-        {status === "pending" ? (<LoadingBox>Loading...</LoadingBox> )
-        : status === "rejected" ? (<MessageBox variant="danger">{error}</MessageBox>)
-        :
+        {deleteStatus === "pending" && (<LoadingBox>Deleting...</LoadingBox>)}
+        {deleteStatus === "rejected" && (<MessageBox variant="danger">{deleteError}</MessageBox>)}
+        {statusLoading === "pending" && (<LoadingBox>Creating...</LoadingBox>) }
+        {statusLoading === "rejected" && (<MessageBox variant="danger">{createdError}</MessageBox>)}
+        {status === "pending" && (<LoadingBox>Loading...</LoadingBox> ) }
+        { status === "rejected" && (<MessageBox variant="danger">{error}</MessageBox>) }
+    
         <table className='table'>
             <thead>
                 <tr>
@@ -80,7 +94,6 @@ export default function ProductListScreen() {
                 ))}
             </tbody>
         </table>
-    }
     </div>
   )
 }
