@@ -43,7 +43,10 @@ const updateProductSlice = createSlice({
     reducers: {
         resetUpdateProduct(state, action) {
             return {
-
+                ...state,
+                status: null,
+                error: '',
+                product: {}
             }
         }
     },

@@ -31,12 +31,15 @@ function ProductEditScreen() {
     const [errorUpload, setErrorUpload] = useState('');
     const uploadFileHandler = async (e) => {
         const file = e.target.value[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
         const bodyFormData = new FormData();
-        bodyFormData.append('image', file);
+        bodyFormData.append('image', reader.result);
         setLoadingUpload(true);
         try {
             const config = {
                 headers: {
+                    'Content-Type':'multipart/form-data',
                     Authorization:`Bearer ${userInfo.token}`,
                 }
             }
@@ -75,7 +78,7 @@ function ProductEditScreen() {
             setBrand(product.brand);
             setDescription(product.description);
         }
-    },[product, dispatch, id, updateStatus, navigate]);
+    },[product, dispatch, id, updateStatus, navigate, setImage]);
     return (
         <div>
                   {  updateStatus === "pending" && <LoadingBox>Loading...</LoadingBox> }

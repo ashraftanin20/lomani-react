@@ -26,6 +26,10 @@ const productDetailsSlice = createSlice({
     reducers: {
         resetProductDetails (state, action) {
             return {
+                ...state,
+                status: null,
+                error: '',
+                product: {}
             }
         }
     },
