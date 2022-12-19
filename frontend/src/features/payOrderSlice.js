@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const payOrder = createAsyncThunk("order/payOrder", 
+export const payOrder = createAsyncThunk("orders/payOrder", 
     async (values, {getState, rejectWithValue, dispatch}) => {       
 
     try {

@@ -6,21 +6,31 @@ import { Link, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { detailsOrder } from '../features/OrderDetailsSlice';
+import { deliverOrder, resetDeliverOrder } from '../features/DeliverOrderSlice';
 
 export default function OrderScreen() {
     const { id } = useParams();
     const [sdkReady, setSdkReady] = useState(false);
+    const auth = useSelector(state => state.auth);
+    const { userInfo } = auth;
     const dispatch = useDispatch();
     
     const payOrder = useSelector((state) => state.payOrder );
     const { payOrderError, payOrderStatus, payOrderData } = payOrder;
     const orderDetails = useSelector((state) => state.orderDetails);
     const { orderDetailsError, orderDetailsData, orderDetailsStatus} = orderDetails;
+
+    const orderDeliver = useSelector(state => state.orderDeliver);
+    const {status: deliverStatus, error: deliverError, order: deliverdOrder} = orderDeliver;
     
     const successPaymentHandler = (paymentResult) => {
       //TODO implement successpaymenthandler
       dispatch(payOrder({orderDetailsData, paymentResult}));
 
+    }
+
+    const deliverHandler = () => {
+      dispatch(deliverOrder(orderDetailsData._id));
     }
 
     useEffect(() => {
@@ -35,7 +45,8 @@ export default function OrderScreen() {
         };
         document.body.appendChild(script);
       };
-      if (!orderDetailsData || payOrderStatus === 'fulfilled' || (orderDetailsData && orderDetailsData._id !== id)) {
+      if (!orderDetailsData || deliverStatus === 'fulfilled' || payOrderStatus === 'fulfilled' || (orderDetailsData && orderDetailsData._id !== id)) {
+        dispatch(resetDeliverOrder());        
         dispatch(detailsOrder(id));
       } else {
         if (!orderDetailsData.isPaid) {
@@ -47,14 +58,17 @@ export default function OrderScreen() {
         }
       }
       
-    },[dispatch, id, orderDetailsData, sdkReady]);
+    },[dispatch, id, orderDetailsData, sdkReady, deliverStatus, payOrderStatus]);
     
-  return orderDetailsStatus === "pending" ? (<LoadingBox>Loading...</LoadingBox>)
-        : orderDetailsStatus === "rejected" ? (
-        <MessageBox variant="danger">{orderDetailsError}</MessageBox> 
-        ) : orderDetailsStatus === "fulfilled" ? (
+  return (
     <div>
+      <div>
         <h1>Order {orderDetailsData._id}</h1>
+        {orderDetailsStatus === "pending" && (<LoadingBox>Loading...</LoadingBox>)}
+        {orderDetailsStatus === "rejected" && (<MessageBox variant="danger">{orderDetailsError}</MessageBox>)}
+        {deliverStatus === "pending" && (<LoadingBox>Loading...</LoadingBox>)}
+        {deliverStatus === "rejected" && (<MessageBox variant="danger">{deliverError}</MessageBox>)}
+        {orderDetailsStatus === 'fulfilled' && (
         <div className="row top">
             <div className="col-2">
                 <ul>
@@ -165,12 +179,21 @@ export default function OrderScreen() {
                             </li>
                           )
                         }
+                        {
+                          ( userInfo.isAdmin && orderDetailsData.isPaid && !orderDetailsData.isDelivered) && (
+                            <li>
+                              <button type='button' onClick={deliverHandler} className='primary block'>
+                                Deliver Order
+                              </button>
+                            </li>
+                          )
+                        }
                     </ul>
                 </div>
             </div>
         </div>
+        )}
     </div>
-  ) : (
-    <p></p>
-  )
+  </div>
+)
 }
