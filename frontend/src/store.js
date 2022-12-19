@@ -11,6 +11,7 @@ import authReducer, { loadUser } from './features/authSlice';
 import orderReducer from './features/OrderSlice';
 import orderDetailsReducder from './features/OrderDetailsSlice';
 import orderListReducer from './features/OrderListSlice';
+import orderDeleteReducer from './features/DeleteOrderSlice';
 import payOrderReducer from './features/payOrderSlice';
 import OrderHistorySlice from './features/OrderHistorySlice';
 import ProfileSlice from './features/ProfileSlice';
@@ -33,6 +34,7 @@ const store = configureStore({
         orderDetails: orderDetailsReducder,
         orderHistory: OrderHistorySlice,
         orderList: orderListReducer,
+        orderDelete: orderDeleteReducer,
         payOrder: payOrderReducer,
     },
     middleware: (getDefualtMiddleware) => {

@@ -4,23 +4,33 @@ import { listOrders } from '../features/OrderListSlice';
 import { useNavigate } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { deleteOrder, resetDeleteOrder } from '../features/DeleteOrderSlice';
 
 function OrderListScreen() {
     const dispatch = useDispatch();
     const naviate = useNavigate();
     const orderList = useSelector(state => state.orderList);
     const {status, error, orders} = orderList;
-    useEffect(() => {
-        dispatch(listOrders());
-    }, [dispatch]);
 
+    const orderDelete = useSelector(state => state.orderDelete);
+    const {status: deletestatus, error: deleteError} = orderDelete;
     const deleteHandler = (order) => {
+        if(window.confirm('Are you sure to Delete the Order?')) {
+            dispatch(deleteOrder(order._id));
+        }
+    };
 
-    }
+    useEffect(() => {
+        dispatch(resetDeleteOrder());
+        dispatch(listOrders());
+    }, [dispatch, deletestatus]);
+
     return (
         <div>
             <div>
                 <h1>Orders</h1>
+                {deletestatus === 'pending' && ( <LoadingBox>Deleting...</LoadingBox>)}
+                {deletestatus === 'rejected' && (<MessageBox variant="danger">{deleteError}</MessageBox>)}
                 {status === 'pending' && ( <LoadingBox>Loading...</LoadingBox>)}
                 {status === 'rejected' && (<MessageBox variant="danger">{error}</MessageBox>)}
                 <table className='table'>
