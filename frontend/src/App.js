@@ -20,6 +20,7 @@ import PrivateRoutes from './components/PrivateRoutes';
 import AdminRoutes from './components/AdminRoutes';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
+import OrderListScreen from './screens/OrderListScreen';
 
 function App() {
 
@@ -100,6 +101,9 @@ function App() {
               </Route>
               <Route element={<AdminRoutes />}>
                 <Route path='/productlist' element={<ProductListScreen exact/>} />
+              </Route>
+              <Route element={<AdminRoutes />}>
+                <Route path='/orderlist' element={<OrderListScreen exact/>} />
               </Route>
             </Routes>
             </main>
