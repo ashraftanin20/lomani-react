@@ -10,6 +10,7 @@ import { productsApi } from './features/ProductsApi';
 import authReducer, { loadUser } from './features/authSlice';
 import orderReducer from './features/OrderSlice';
 import orderDetailsReducder from './features/OrderDetailsSlice';
+import orderListReducer from './features/OrderListSlice';
 import payOrderReducer from './features/payOrderSlice';
 import OrderHistorySlice from './features/OrderHistorySlice';
 import ProfileSlice from './features/ProfileSlice';
@@ -31,6 +32,7 @@ const store = configureStore({
         order: orderReducer,
         orderDetails: orderDetailsReducder,
         orderHistory: OrderHistorySlice,
+        orderList: orderListReducer,
         payOrder: payOrderReducer,
     },
     middleware: (getDefualtMiddleware) => {
