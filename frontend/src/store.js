@@ -18,7 +18,8 @@ import OrderHistorySlice from './features/OrderHistorySlice';
 import ProfileSlice from './features/ProfileSlice';
 import fetchUserReducer from './features/UserSlice';
 import userDeleteReducer from './features/DeleteUserSlice';
-
+import userUpdateSlice from './features/UpdateUserSlice';
+import ProfileUpdateSlice from './features/UpdateProductSlice';
 
 
 const store = configureStore({
@@ -32,7 +33,6 @@ const store = configureStore({
         createProduct: productDetailsReducer,
         cart: cartReducer,
         auth: authReducer,
-        userProfile: ProfileSlice,
         orderCreate: orderCreateReducer,
         orderDetails: orderDetailsReducder,
         orderHistory: OrderHistorySlice,
@@ -41,7 +41,10 @@ const store = configureStore({
         orderDeliver: orderDeliverReducer,
         payOrderData: payOrderReducer,
         usersFetch: fetchUserReducer,
+        userProfile: ProfileSlice,
+        userUpdateProfile: ProfileUpdateSlice,
         userDelete: userDeleteReducer,
+        userUpdate: userUpdateSlice,
     },
     middleware: (getDefualtMiddleware) => {
         return getDefualtMiddleware().concat(productsApi.middleware);

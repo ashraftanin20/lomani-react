@@ -4,6 +4,7 @@ import { fetchUsers } from '../features/UserSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { deleteUser, resetDeleteUser } from '../features/DeleteUserSlice';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function UserListScreen() {
 
@@ -12,9 +13,11 @@ function UserListScreen() {
     const userDelete = useSelector(state => state.userDelete);
     const {status: deleteStatus, error: deleteError} = userDelete;
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     
-    const editHandler = () => {
+    const editHandler = (user) => {
         //TODO implment edit user
+        navigate(`/useredit/${user._id}`);
     }
     const deleteHandler = (user) => {
         //TODO Implement delete user
@@ -53,7 +56,7 @@ function UserListScreen() {
                                         <td>{user.isSeler ? 'YES' : 'NO'}</td>
                                         <td>{user.isAdmin ? 'YES' : 'NO'}</td>
                                         <td>
-                                            <button type='button' className='small' onClick={editHandler} >
+                                            <button type='button' className='small' onClick={() => editHandler(user)} >
                                                 EDIT
                                             </button>
                                             <button type='button' className='small' onClick={() => deleteHandler(user)} >
