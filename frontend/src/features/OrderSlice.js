@@ -26,9 +26,7 @@ export const createOrder = createAsyncThunk("order/createOrder",
         }, config
         
         );
-        dispatch(emptyCart());
-        localStorage.removeItem("cartItems");
-        return data;
+        return data.order;
 
     } catch(err){
         const message = err.response && err.response.data.message 
@@ -40,12 +38,13 @@ export const createOrder = createAsyncThunk("order/createOrder",
 });
 
 const initialState = {
-    orderError: "",
-    orderStatus: "pending",
+    error: "",
+    status: "pending",
+    order: {}
 };
 
 const orderSlice = createSlice({
-    name: "order",
+    name: "orderCreate",
     initialState,
     reducers: {
         resetOrder (state, action) {
@@ -54,30 +53,18 @@ const orderSlice = createSlice({
             }
         }
     },
-    extraReducers: (builder) => {
-        builder.addCase(createOrder.pending, (state, action) => {
-            return { ...state, orderStatus: "pending" };
-        });
-
-        builder.addCase(createOrder.fulfilled, (state, action) => {
-            if(action.payload) {
-                return {
-                    ...state,
-                    orderData: action.payload,
-                    orderStatus: "fulfilled"
-                };
-            } else {
-                return state;
-            }
-        });
-
-        builder.addCase(createOrder.rejected, (state, action) => {
-            return {
-                ...state,
-                orderStatus: "rejected",
-                orderError: action.payload
-            }
-        });
+    extraReducers: {
+        [createOrder.pending]: (state, action) => {
+            state.status = "pending";
+        },
+        [createOrder.fulfilled]: (state, action) => {
+            state.status = "fulfilled";
+            state.order = action.payload;
+        },
+        [createOrder.rejecte]: (state, action) => {
+            state.status = "rejected";
+            state.error = action.payload;
+        },
     }
 });
 

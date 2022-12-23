@@ -8,6 +8,7 @@ import MessageBox from '../components/MessageBox';
 
 export default function PlaceOrderScreen() {
     const cart = useSelector(state => state.cart);
+
     const navigate = useNavigate();
     const toPrice = (num) => Number(num.toFixed(2));
     const itemsPrice = toPrice(
@@ -17,8 +18,8 @@ export default function PlaceOrderScreen() {
     const taxPrice = toPrice(0.15 * itemsPrice);
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
     const dispatch = useDispatch();
-    const order = useSelector((state) => state.order);
-    //const {orderData} = order; 
+    const orderCreate = useSelector((state) => state.orderCreate);
+    const {status: orderCreateStatus, error: orderCreateError, order: orderCreateData} = orderCreate;
     
     
     const placeOrderHandler = (e) => {
@@ -30,11 +31,11 @@ export default function PlaceOrderScreen() {
         if(!cart.paymentMethod) {
             navigate('/payment');
         }
-        if(order.orderStatus === "fulfilled") {
-            navigate(`/order/${order.orderData.order._id}`);
+        if(orderCreateStatus === "fulfilled") {
+            navigate(`/order/${orderCreateData._id}`);
             dispatch(resetOrder());
         }
-    },[cart.paymentMethod, navigate, dispatch, order.orderStatus, order.orderData]);
+    },[cart.paymentMethod, navigate, dispatch, orderCreateStatus]);
   return (
     <div>
         <CheckoutSteps step1 step2 step3 step4 ></CheckoutSteps>
@@ -127,9 +128,9 @@ export default function PlaceOrderScreen() {
                             </button>
                         </li>
                         {
-                            order.orderStatus === "pending" ?? <LoadingBox></LoadingBox>
+                            orderCreateStatus === "pending" ?? <LoadingBox></LoadingBox>
                         }
-                        { order.orderStatus === "rejected" ?? <MessageBox variant="danger">{order.orderError}</MessageBox>}
+                        { orderCreateStatus === "rejected" ?? <MessageBox variant="danger">{orderCreateError}</MessageBox>}
                     </ul>
                 </div>
             </div>

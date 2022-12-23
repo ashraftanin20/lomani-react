@@ -1,6 +1,6 @@
 import React from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import CartScreen from './screens/CartScreen';
@@ -36,6 +36,9 @@ function App() {
   return (
     <BrowserRouter>
     <ToastContainer />
+    <PayPalScriptProvider 
+      options={{"client-id": "Ac7IQDngMxh-2-24_GOGMt09VNaOKJgF8dS1JKSKGPPw_WNGLvP75pmaf7TQYLuc4IZit1shBijYHnU4"}}
+    >
     <div className="grid-container">
             <header className="row">
                 <div>
@@ -111,6 +114,7 @@ function App() {
                 All right reserved @lomani 2022
             </footer>
         </div>
+        </PayPalScriptProvider>
         </BrowserRouter>
   );
 }
