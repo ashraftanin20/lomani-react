@@ -21,6 +21,7 @@ import AdminRoutes from './components/AdminRoutes';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
+import UserListScreen from './screens/UserListScreen';
 
 function App() {
 
@@ -101,6 +102,9 @@ function App() {
               <Route path='/order/:id' element={<OrderScreen />} />
               <Route element={<PrivateRoutes />}>
                 <Route path='/userprofile' element={<ProfileScreen />} />
+              </Route>
+              <Route element={<AdminRoutes />}>
+                <Route path='/userlist' element={<UserListScreen exact/>} />
               </Route>
               <Route element={<AdminRoutes />}>
                 <Route path='/productlist' element={<ProductListScreen exact/>} />
