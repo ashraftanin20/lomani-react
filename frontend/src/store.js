@@ -16,6 +16,8 @@ import orderDeliverReducer from './features/DeliverOrderSlice';
 import payOrderReducer from './features/payOrderSlice';
 import OrderHistorySlice from './features/OrderHistorySlice';
 import ProfileSlice from './features/ProfileSlice';
+import fetchUserReducer from './features/UserSlice';
+import userDeleteReducer from './features/DeleteUserSlice';
 
 
 
@@ -38,6 +40,8 @@ const store = configureStore({
         orderDelete: orderDeleteReducer,
         orderDeliver: orderDeliverReducer,
         payOrderData: payOrderReducer,
+        usersFetch: fetchUserReducer,
+        userDelete: userDeleteReducer,
     },
     middleware: (getDefualtMiddleware) => {
         return getDefualtMiddleware().concat(productsApi.middleware);
