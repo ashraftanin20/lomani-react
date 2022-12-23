@@ -8,7 +8,7 @@ import productCreateReducer from './features/CreateProductSlice';
 import productDeleteReducer from './features/DeleteProductSlice';
 import { productsApi } from './features/ProductsApi';
 import authReducer, { loadUser } from './features/authSlice';
-import orderReducer from './features/OrderSlice';
+import orderCreateReducer from './features/OrderSlice';
 import orderDetailsReducder from './features/OrderDetailsSlice';
 import orderListReducer from './features/OrderListSlice';
 import orderDeleteReducer from './features/DeleteOrderSlice';
@@ -31,13 +31,13 @@ const store = configureStore({
         cart: cartReducer,
         auth: authReducer,
         userProfile: ProfileSlice,
-        order: orderReducer,
+        orderCreate: orderCreateReducer,
         orderDetails: orderDetailsReducder,
         orderHistory: OrderHistorySlice,
         orderList: orderListReducer,
         orderDelete: orderDeleteReducer,
         orderDeliver: orderDeliverReducer,
-        payOrder: payOrderReducer,
+        payOrderData: payOrderReducer,
     },
     middleware: (getDefualtMiddleware) => {
         return getDefualtMiddleware().concat(productsApi.middleware);

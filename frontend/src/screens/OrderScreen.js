@@ -1,69 +1,53 @@
-import axios from 'axios';
-import { PayPalButton } from 'react-paypal-button-v2';
-import React, { useEffect, useState } from 'react'
+
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { detailsOrder } from '../features/OrderDetailsSlice';
 import { deliverOrder, resetDeliverOrder } from '../features/DeliverOrderSlice';
+import { PayPalButtons } from '@paypal/react-paypal-js';
+import { payOrder, resetPayOrder } from '../features/payOrderSlice';
 
 export default function OrderScreen() {
     const { id } = useParams();
-    const [sdkReady, setSdkReady] = useState(false);
     const auth = useSelector(state => state.auth);
     const { userInfo } = auth;
     const dispatch = useDispatch();
-    
-    const payOrder = useSelector((state) => state.payOrder );
-    const { payOrderError, payOrderStatus, payOrderData } = payOrder;
+    const payOrderData = useSelector(state => state.payOrderData);
+    const { status: payStatus, error: payError, order: payData } = payOrderData;
     const orderDetails = useSelector((state) => state.orderDetails);
     const { orderDetailsError, orderDetailsData, orderDetailsStatus} = orderDetails;
 
     const orderDeliver = useSelector(state => state.orderDeliver);
     const {status: deliverStatus, error: deliverError, order: deliverdOrder} = orderDeliver;
-    
-    const successPaymentHandler = (paymentResult) => {
-      //TODO implement successpaymenthandler
-      dispatch(payOrder({orderDetailsData, paymentResult}));
-
-    }
 
     const deliverHandler = () => {
       dispatch(deliverOrder(orderDetailsData._id));
     }
 
-    useEffect(() => {
-      const addPayPalScript = async () => {
-        const { data } = await axios.get('/api/config/paypal');
-        const script = document.createElement('script');
-        script.type="text/javascript";
-        script.src=`https://www.paypal.com/sdk/js?client-id=${data}`;
-        script.async=true;
-        script.onload = () => {
-          setSdkReady(true);
-        };
-        document.body.appendChild(script);
-      };
-      if (!orderDetailsData || deliverStatus === 'fulfilled' || payOrderStatus === 'fulfilled' || (orderDetailsData && orderDetailsData._id !== id)) {
-        dispatch(resetDeliverOrder());        
-        dispatch(detailsOrder(id));
-      } else {
-        if (!orderDetailsData.isPaid) {
-          if (!window.paypal) {
-            addPayPalScript();
-          } else {
-            setSdkReady(true);
-          }
-        }
-      }
+    const successPaymentHandler = (data) => {
+      //TODO implement successpaymenthandler
+      dispatch(payOrder({orderDetailsData, data}));
+
+    }
+    
       
-    },[dispatch, id, orderDetailsData, sdkReady, deliverStatus, payOrderStatus]);
+    useEffect(() => {
+    
+      if (!orderDetailsData || deliverStatus === 'fulfilled' || payStatus === 'fulfilled' || (orderDetailsData && orderDetailsData._id !== id)) {
+        dispatch(resetDeliverOrder());  
+        dispatch(resetPayOrder());      
+        dispatch(detailsOrder(id));
+      } 
+    },[dispatch, id, orderDetailsData, deliverStatus, payStatus]);
     
   return (
     <div>
       <div>
         <h1>Order {orderDetailsData._id}</h1>
+        {payStatus === "pending" && (<LoadingBox>Loading...</LoadingBox>)}
+        {payStatus === "rejected" && (<MessageBox variant="danger">{payError}</MessageBox>)}
         {orderDetailsStatus === "pending" && (<LoadingBox>Loading...</LoadingBox>)}
         {orderDetailsStatus === "rejected" && (<MessageBox variant="danger">{orderDetailsError}</MessageBox>)}
         {deliverStatus === "pending" && (<LoadingBox>Loading...</LoadingBox>)}
@@ -159,25 +143,33 @@ export default function OrderScreen() {
                                 <div><strong>${orderDetailsData.totalPrice.toFixed(2)}</strong></div>
                             </div>
                         </li>
-                        {
-                          !orderDetailsData.isPaid && (
-                            <li>
-                              {!sdkReady ? (<LoadingBox></LoadingBox>) :
-                              (
-                                <>
-                                {payOrderStatus === 'rejected' && (
-                                  <MessageBox variant="danger">{payOrderError}</MessageBox>
-                                  )}
-                                {payOrderStatus === 'pending' && (<LoadingBox></LoadingBox>)}
-                                <PayPalButton 
-                                  amount={orderDetailsData.totalPrice}
-                                  onSuccess={successPaymentHandler}
-                                ></PayPalButton>
-                                </>
-                              )
-                              }
-                            </li>
+                          {!orderDetailsData.isPaid ? (
+                             <li>
+                          <PayPalButtons 
+                            createOrder={(data, actions) => {
+                              return actions.order.create({
+                                purchase_units: [{
+                                  description: orderDetailsData.description,
+                                  amount: {
+                                    value: orderDetailsData.totalPrice,
+                                    country: "EUR",
+                                  }
+                                }]
+                              });
+                            }}
+                            onApprove={async(data, actions) => {
+                              const order = await actions.order.capture();
+                              console.log("Order: ", order);
+                              console.log("PaymentResult:", data);
+                              successPaymentHandler(data);
+                            }}
+                          />
+                        </li>
                           )
+                        : (
+                          <li>
+                            Your Order is Paid.
+                          </li>                        )
                         }
                         {
                           ( userInfo.isAdmin && orderDetailsData.isPaid && !orderDetailsData.isDelivered) && (

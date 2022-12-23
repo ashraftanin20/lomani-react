@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { emptyCart } from "./CartSlice";
 
 export const payOrder = createAsyncThunk("orders/payOrder", 
     async (values, {getState, rejectWithValue, dispatch}) => {       
@@ -16,8 +17,9 @@ export const payOrder = createAsyncThunk("orders/payOrder",
             values.paymentResult,
             config
         );
-
-        return data;
+        dispatch(emptyCart());
+        localStorage.removeItem("cartItems");
+        return data.order;
 
     } catch(err){
         const message = err.response && err.response.data.message 
@@ -29,40 +31,37 @@ export const payOrder = createAsyncThunk("orders/payOrder",
 });
 
 const initialState = {
-    payOrderError: "",
-    payOrderStatus: "pending",
+    status: null,
+    error: "",
+    order: {}
 };
 const payOrderSlice = createSlice({
-    name: "payOrder",
+    name: "payOrderData",
     initialState,
     reducers: {
-    
-    },
-    extraReducers: (builder) => {
-        builder.addCase(payOrder.pending, (state, action) => {
-            return { ...state, payOrderStatus: "pending" };
-        });
-
-        builder.addCase(payOrder.fulfilled, (state, action) => {
-            if(action.payload) {
-                return {
-                    ...state,
-                    payOrderData: action.payload,
-                    payOrderStatus: "fulfilled"
-                };
-            } else {
-                return state;
-            }
-        });
-
-        builder.addCase(payOrder.rejected, (state, action) => {
+        resetPayOrder(state, action) {
             return {
                 ...state,
-                payOrderStatus: "rejected",
-                payOrderError: action.payload
+                status: null,
+                error: '',
+                order: {}
             }
-        });
+        }
+    },
+    extraReducers: {    
+            [payOrder.pending]: (state, action) => {
+                state.status = "pending";
+            },
+            [payOrder.fulfilled]: (state, action) => {
+                state.status = "fulfilled";
+                state.order = action.payload;
+            },
+            [payOrder.rejected]: (state, action) => {
+                state.status = "rejected";
+                state.error = action.payload;
+            },
     }
 });
 
+export const { resetPayOrder } = payOrderSlice.actions;
 export default payOrderSlice.reducer;
