@@ -2,38 +2,46 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { detailsUser, resetProfileUpdate, updateProfile } from '../features/ProfileSlice';
+import { detailsUser, resetProfile } from '../features/ProfileSlice';
+import { updateProfile } from '../features/UpdateProfileSlice';
 
 function ProfileScreen() {
 
     const auth = useSelector((state) => state.auth);
     const { userInfo } = auth;
-    const userProfile = useSelector((state) => state.userProfile);
 
-    const { userDetailData, userDetailStatus, userDetailError, updateProfileStatus, 
-            updateProfileError } = userProfile;
+    const userProfile = useSelector((state) => state.userProfile);
+    const { status, error, user: profileUser } = userProfile;
+    const userUpdateProfile = useSelector(state => state.userUpdateProfile);
+    const { status: updateProfileStatus, error: updateProfileError } = userUpdateProfile;
     const [user, setUser] = useState({
-        name: userDetailData.name || "",
-        email: userDetailData.email || "",
+        name: "",
+        email: "",
         password:"",
         confirmPassord:""
     });
     const dispatch = useDispatch();
     
     useEffect(() => {
-        if(!userDetailData) {
-            dispatch(resetProfileUpdate());
+        if(!profileUser.name || profileUser._id !== userInfo._id) {
             dispatch(detailsUser(userInfo._id));
-        } 
+        } else {
+            setUser({
+                name: profileUser.name || "",
+                email: profileUser.email || "",
+                password:"",
+                confirmPassord:""
+            });
+        }
         
-    }, [dispatch, userInfo._id, userDetailData, user]);
+    }, [dispatch, profileUser]);
 
     const submitHandler = (e) => {
         e.preventDefault();
         if(user.password !== user.confirmPassord) {
             alert("Password does not match confirm password!");
         } else {
-            dispatch(updateProfile({userId: userDetailData._id, name:user.name, email: user.email, password: user.password}));
+            dispatch(updateProfile({userId: profileUser._id, name:user.name, email: user.email, password: user.password}));
         }
 
     }
@@ -44,10 +52,10 @@ function ProfileScreen() {
                     <h1>User Profile</h1>
                 </div>
                 {
-                    userDetailStatus === "pending" ? (
+                    status === "pending" ? (
                         <LoadingBox>Loading...</LoadingBox>
-                    ) : userDetailStatus === "rejected" ? (
-                        <MessageBox variant="danger">{userDetailError}</MessageBox>
+                    ) : status === "rejected" ? (
+                        <MessageBox variant="danger">{error}</MessageBox>
                     ) : (
                         <>
                             {updateProfileStatus === "pending" && (<LoadingBox>Updating...</LoadingBox>)}

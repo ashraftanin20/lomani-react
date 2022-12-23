@@ -217,7 +217,9 @@ img.large {
 .form label {
   margin: 1rem 0;
 }
-
+.align-left {
+  align-items: flex-start;
+}
 /* Dropdown */
 .dropdown {
   display: inline-block;
