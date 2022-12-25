@@ -15,7 +15,7 @@ export const updateUserData = createAsyncThunk('users/updateUser',
                 name: user.name,
                 email: user.email,
                 isAdmin: user.isAdmin,
-                isSeler: user.isSeler,
+                isSeller: user.isSeller,
             }, config);
             return data.user;
         } catch(err){

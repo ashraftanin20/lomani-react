@@ -22,6 +22,7 @@ userRouter.post('/signin', expressAsyncHandler(async (req, res) => {
                 name: user.name,
                 email: user.email,
                 isAdmin: user.isAdmin,
+                isSeller: user.isSeller,
                 token: generateToken(user)
             });
             return;
@@ -43,6 +44,7 @@ userRouter.post('/register', expressAsyncHandler (async (req, res) => {
             name: createdUser.name,
             email: createdUser.email,
             isAdmin: createdUser.isAdmin,
+            isSeller: createdUser.isSeller,
             token: generateToken(createdUser),
         });
     }) 
@@ -63,6 +65,11 @@ userRouter.put('/profile', isAuth, expressAsyncHandler(async (req, res) => {
     if (user) {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
+        if(user.isSeller) {
+            user.seller.name = req.body.sellerName || user.seller.name;
+            user.seller.logo = req.body.sellerLogo || user.seller.logo;
+            user.seller.description = req.body.sellerDescription || user.seller.description;
+        }
         if(req.body.password) {
             user.password = bcrypt.hashSync(req.body.password, 8);
         }
@@ -72,6 +79,7 @@ userRouter.put('/profile', isAuth, expressAsyncHandler(async (req, res) => {
             name: upddatedUser.name,
             email: upddatedUser.email,
             isAdmin: upddatedUser.isAdmin,
+            isSeller: upddatedUser.isSeller,
             token: generateToken(upddatedUser),
         });
     }
@@ -105,7 +113,7 @@ userRouter.put('/:id', isAuth, isAdmin, expressAsyncHandler(async(req, res) => {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
         user.isAdmin = req.body.isAdmin || user.isAdmin;
-        user.isSeler = req.body.isSeler || user.isSeler;
+        user.isSeller = req.body.isSeller || user.isSeller;
         const updateUser = await user.save();
         res.send({message: 'User Updated Succussfully', user: updateUser});
     }else {

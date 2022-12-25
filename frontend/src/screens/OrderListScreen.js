@@ -12,6 +12,10 @@ function OrderListScreen() {
     const orderList = useSelector(state => state.orderList);
     const {status, error, orders} = orderList;
 
+    const auth = useSelector(state => state.auth);
+    const { userInfo } = auth;
+    const sellerMode = window.location.href.indexOf('/seller') >= 0;
+
     const orderDelete = useSelector(state => state.orderDelete);
     const {status: deletestatus, error: deleteError} = orderDelete;
     const deleteHandler = (order) => {
@@ -22,8 +26,8 @@ function OrderListScreen() {
 
     useEffect(() => {
         dispatch(resetDeleteOrder());
-        dispatch(listOrders());
-    }, [dispatch, deletestatus]);
+        dispatch(listOrders({ seller: sellerMode ? userInfo._id : '' }));
+    }, [dispatch, deletestatus, sellerMode, userInfo._id]);
 
     return (
         <div>

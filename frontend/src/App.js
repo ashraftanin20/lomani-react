@@ -23,6 +23,7 @@ import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import SellerRoute from './components/SellerRoute';
 
 function App() {
 
@@ -63,6 +64,21 @@ function App() {
                       </div>
                       ): (<Link to="/signin">Sign In</Link>)
                     }
+                    {userInfo && userInfo.isSeller && (
+                        <div className='dropdown'>
+                        <Link to='#seller'>
+                          Seller <i className='fa fa-caret-down'></i>
+                        </Link>
+                        <ul className='dropdown-content'>
+                          <li>
+                            <Link to='/productlist/seller'>Products</Link>
+                          </li>
+                          <li>
+                            <Link to='/orderlist/seller'>Orders</Link>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
                     {userInfo && userInfo.isAdmin && (
                       <div className='dropdown'>
                         <Link to='#admin'>
@@ -103,6 +119,12 @@ function App() {
               <Route path='/order/:id' element={<OrderScreen />} />
               <Route element={<PrivateRoutes />}>
                 <Route path='/userprofile' element={<ProfileScreen />} />
+              </Route>
+              <Route element={<SellerRoute />}>
+                <Route path='/productlist/seller' element={<ProductListScreen exact />} />
+              </Route>
+              <Route element={<SellerRoute />}>
+                <Route path='/orderlist/seller' element={<ProductListScreen exact />} />
               </Route>
               <Route element={<AdminRoutes />}>
                 <Route path='/userlist' element={<UserListScreen exact/>} />
