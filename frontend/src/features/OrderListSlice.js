@@ -7,7 +7,7 @@ const initialState = {
     error: ""
 }
 
-export const listOrders = createAsyncThunk('orders/listOrders', async (value, {rejectWithValue, getState}) => {
+export const listOrders = createAsyncThunk('orders/listOrders', async (values, {rejectWithValue, getState}) => {
     try {
         const { auth } = getState();
         const { userInfo } = auth;
@@ -17,7 +17,7 @@ export const listOrders = createAsyncThunk('orders/listOrders', async (value, {r
                 Authorization: `Berear ${userInfo.token}`,
             }
         }
-        const response = await axios.get('/api/orders', config);
+        const response = await axios.get(`/api/orders?seller=${values.seller}`, config);
         return response.data;
     } catch (err) {
         const message = err.response && err.response.data.message 

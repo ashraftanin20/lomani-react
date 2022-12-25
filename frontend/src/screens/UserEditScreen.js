@@ -11,7 +11,7 @@ function UserEditScreen() {
     const[name, setName] = useState('');
     const[email, setEmail] = useState('');
     const[isAdmin, setIsAdmin] = useState(false);
-    const[isSeler, setIsSeler] = useState(false);
+    const[isSeller, setIsSeller] = useState(false);
 
     const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ function UserEditScreen() {
         // Implement onSubmit here
         e.preventDefault();
         dispatch(updateUserData({_id: id,
-                                    name, email, isAdmin, isSeler})
+                                    name, email, isAdmin, isSeller})
                 );
     }
     useEffect(() => {
@@ -40,7 +40,7 @@ function UserEditScreen() {
             setName(userData.name);
             setEmail(userData.email);
             setIsAdmin(userData.isAdmin);
-            setIsSeler(userData.isSeler);
+            setIsSeller(userData.isSeller);
         }
     },[userData, dispatch, id, updateStatus, navigate]);
     return (
@@ -73,9 +73,9 @@ function UserEditScreen() {
                         ></input>
                     </div>
                     <div className='align-left'>
-                        <label htmlFor='isSeler'>Is Seller:</label>
-                        <input id='isSeler' type='checkbox' checked={isSeler} 
-                            onChange={(e) => setIsSeler(e.target.checked)}
+                        <label htmlFor='isSeller'>Is Seller:</label>
+                        <input id='isSeller' type='checkbox' checked={isSeller} 
+                            onChange={(e) => setIsSeller(e.target.checked)}
                         ></input>
                     </div>
                     <div>

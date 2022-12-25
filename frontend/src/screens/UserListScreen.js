@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsers } from '../features/UserSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { deleteUser, resetDeleteUser } from '../features/DeleteUserSlice';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { deleteUser } from '../features/DeleteUserSlice';
+import { useNavigate } from 'react-router-dom';
 
 function UserListScreen() {
 
@@ -53,7 +53,7 @@ function UserListScreen() {
                                         <td>{user._id}</td>
                                         <td>{user.name}</td>
                                         <td>{user.email}</td>
-                                        <td>{user.isSeler ? 'YES' : 'NO'}</td>
+                                        <td>{user.isSeller ? 'YES' : 'NO'}</td>
                                         <td>{user.isAdmin ? 'YES' : 'NO'}</td>
                                         <td>
                                             <button type='button' className='small' onClick={() => editHandler(user)} >

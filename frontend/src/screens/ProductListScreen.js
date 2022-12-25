@@ -7,7 +7,14 @@ import { productFetch } from '../features/ProductSlice';
 import { createProduct, resetCreateProduct } from '../features/CreateProductSlice';
 import { deleteProduct, resetDeleteProduct } from '../features/DeleteProductSlice';
 
-export default function ProductListScreen() {
+export default function ProductListScreen(props) {
+    //const sellerMode = props.match.path.indexOf('/seller') >= 0;
+    const auth = useSelector(state => state.auth);
+    const { userInfo } = auth;
+    const sellerMode = window.location.href.indexOf('/seller') >= 0;
+    //const { seller } = useParams();
+    console.log(sellerMode);
+    //const sellerMode = seller >= 0;
     
     const products = useSelector(state => state.products);
     const { items, error, status } = products;
@@ -45,8 +52,8 @@ export default function ProductListScreen() {
         if(deleteStatus === 'fulfilled') {
             dispatch(resetDeleteProduct());
         } 
-        dispatch(productFetch());
-    }, [dispatch, createdProduct._id, navigate, statusLoading, deleteStatus]);
+        dispatch(productFetch({ seller: sellerMode ? userInfo._id : '' }));
+    }, [dispatch, createdProduct._id, navigate, statusLoading, deleteStatus, sellerMode, userInfo._id]);
     
   return (
     <div>

@@ -38,6 +38,7 @@ const cartSlice = createSlice({
                     price: product.price,
                     countInStock: product.countInStock,
                     product: product._id,
+                    seller: product.seller,
                     cartQty: qty,
                 }
                 state.cartItems.push(tempProduct);

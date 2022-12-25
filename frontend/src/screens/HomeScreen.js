@@ -13,7 +13,7 @@ import { productFetch } from '../features/ProductSlice';
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(productFetch());
+        dispatch(productFetch({seller: ''}));
     }, [dispatch]);
     return (
         <div>

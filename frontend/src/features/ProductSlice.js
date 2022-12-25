@@ -7,9 +7,9 @@ const initialState = {
     error: ""
 }
 
-export const productFetch = createAsyncThunk('products/productFetch', async (value, {rejectWithValue}) => {
+export const productFetch = createAsyncThunk('products/productFetch', async (values, {rejectWithValue}) => {
     try {
-        const response = await axios.get('/api/products');
+        const response = await axios.get(`/api/products?seller=${values.seller}`);
         return response.data;
     } catch (err) {
         const message = err.response && err.response.data.message 
