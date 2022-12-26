@@ -24,6 +24,7 @@ import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './components/SellerRoute';
+import SellerScreen from './screens/SellerScreen';
 
 function App() {
 
@@ -105,6 +106,7 @@ function App() {
             </header>
             <main>
             <Routes>
+              <Route path='/seller/:id' element={<SellerScreen />} />
               <Route path='/' element={<HomeScreen />} exact />
               <Route path='/product/:id' element={<ProductScreen exact/>} />
               <Route path='/product/:id/edit' element={<ProductEditScreen exact/>} />
@@ -124,7 +126,7 @@ function App() {
                 <Route path='/productlist/seller' element={<ProductListScreen exact />} />
               </Route>
               <Route element={<SellerRoute />}>
-                <Route path='/orderlist/seller' element={<ProductListScreen exact />} />
+                <Route path='/orderlist/seller' element={<OrderListScreen exact />} />
               </Route>
               <Route element={<AdminRoutes />}>
                 <Route path='/userlist' element={<UserListScreen exact/>} />

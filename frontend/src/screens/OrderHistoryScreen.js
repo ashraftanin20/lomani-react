@@ -11,15 +11,15 @@ export default function OrderHistoryScreen() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const orderHistory = useSelector((state) => state.orderHistory);
-    const { orderHistoryError, orderHistoryData, orderHistoryStatus} = orderHistory;
+    const { error, orders, status} = orderHistory;
 
     useEffect(() => {
-      dispatch(getOrderHistory(null));
+      dispatch(getOrderHistory());
     },[dispatch]);
     
-  return orderHistoryStatus === "pending" ? (<LoadingBox>Loading...</LoadingBox>)
-        : orderHistoryStatus === "rejected" ? (
-        <MessageBox variant="danger">{orderHistoryError}</MessageBox> 
+  return status === "pending" ? (<LoadingBox>Loading...</LoadingBox>)
+        : status === "rejected" ? (
+        <MessageBox variant="danger">{error}</MessageBox> 
         ) : 
         (
           <table className='table'>
@@ -34,7 +34,7 @@ export default function OrderHistoryScreen() {
               </tr>
             </thead>
             <tbody>
-              {orderHistoryData.map((order) => (
+              {orders.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
