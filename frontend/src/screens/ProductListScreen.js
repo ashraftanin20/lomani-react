@@ -52,7 +52,8 @@ export default function ProductListScreen(props) {
         if(deleteStatus === 'fulfilled') {
             dispatch(resetDeleteProduct());
         } 
-        dispatch(productFetch({ seller: sellerMode ? userInfo._id : '' }));
+        const seller = sellerMode ? userInfo._id : '';
+        dispatch(productFetch(seller));
     }, [dispatch, createdProduct._id, navigate, statusLoading, deleteStatus, sellerMode, userInfo._id]);
     
   return (

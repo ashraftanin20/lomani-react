@@ -46,7 +46,7 @@ const profileSlice = createSlice({
             state.status = "pending";
         },
         [detailsUser.fulfilled]: (state, action) => {
-            state.status = "filfilled";
+            state.status = "fulfilled";
             state.user = action.payload;
         },
         [detailsUser.rejected]: (state, action) => {

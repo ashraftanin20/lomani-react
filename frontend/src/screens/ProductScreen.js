@@ -21,14 +21,13 @@ export default function ProductScreen() {
 
     const addToCartHandler = () => {
         dispatch(addToCart({product: product, qty: qty, act: "add"}));
-        //navigate(`/cart/${id}?qty=${qty}`);
-        //history.push("/cart");
     }
         return (
             <div>
             { 
-                status === "pending" ? (<LoadingBox>Loading...</LoadingBox>) : 
-                 status === "rejected" ? (<MessageBox variant="danger">{error}</MessageBox>) : 
+                status === "pending" && (<LoadingBox>Loading...</LoadingBox>)}
+                { status === "rejected" && (<MessageBox variant="danger">{error}</MessageBox>)}
+                { status === "fulfilled" &&
                 ( 
                     <div>
                 <Link to="/">Back to Products</Link>
@@ -61,6 +60,21 @@ export default function ProductScreen() {
                     <div className="col-1">
                         <div className="card card-body">
                             <ul>
+                                <li>
+                                    Seller{' '}
+                                </li>
+                                <li>
+                                    <h2>
+                                        <Link to={`/seller/${product.seller._id}`} >
+                                            {product.seller.seller.name}
+                                        </Link> 
+                                    </h2>
+                                    <Rating 
+                                        rating={product.seller.seller.rating} 
+                                        numReviews={product.seller.seller.numReviews} >
+                                    </Rating>
+                                </li>
+                                <li></li>
                                 <li>
                                     <div className="row">
                                         <div>Price</div>

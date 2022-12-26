@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getOrderHistory = createAsyncThunk("order/getOrderHistory", 
-                                async ( value, {getState, rejectWithValue }) => {
+export const getOrderHistory = createAsyncThunk("orders/getOrderHistory", 
+                                async (value, {getState, rejectWithValue }) => {
     try {
         const { auth } = getState();
         const { userInfo } = auth;
@@ -23,39 +23,28 @@ export const getOrderHistory = createAsyncThunk("order/getOrderHistory",
     }
 });
 const initialState = {
-    orderHistoryData: [],
-    orderHistoryError: "",
-    orderHistoryStatus: "",
+    orders: [],
+    error: "",
+    status: null,
 }
 const orderHistorySlice = createSlice({
     name: "orderHistory",
     initialState,
     reducers: {
     },
-    extraReducers: (builder) => {
-        builder.addCase(getOrderHistory.pending, (state, action) => {
-            return { ...state, orderHistoryStatus: "pending" };
-        });
+    extraReducers: {
+        [getOrderHistory.pending]: (state, action) => {
+            state.status = "pending";
+        },
 
-        builder.addCase(getOrderHistory.fulfilled, (state, action) => {
-            if(action.payload) {
-                return {
-                    ...state,
-                    orderHistoryData: action.payload,
-                    orderHistoryStatus: "fulfilled",
-                };
-            } else {
-                return state;
-            }
-        });
-
-        builder.addCase(getOrderHistory.rejected, (state, action) => {
-            return {
-                ...state,
-                orderHistoryStatus: "rejected",
-                orderHistoryError: action.payload
-            }
-        });
+        [getOrderHistory.fulfilled]: (state, action) => {
+            state.status = "fulfilled";
+            state.orders = action.payload;
+        },
+        [getOrderHistory.rejected]: (state, action) => {
+            state.status = "rejected";
+            state.error = action.payload;
+        }
     }
 });
 
