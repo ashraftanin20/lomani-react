@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { emptyCart } from './CartSlice';
-
 
 export const createOrder = createAsyncThunk("order/createOrder", 
                             async (values, {getState, rejectWithValue, dispatch}) => {       

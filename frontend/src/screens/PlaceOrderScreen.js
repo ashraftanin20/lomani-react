@@ -35,7 +35,7 @@ export default function PlaceOrderScreen() {
             navigate(`/order/${orderCreateData._id}`);
             dispatch(resetOrder());
         }
-    },[cart.paymentMethod, navigate, dispatch, orderCreateStatus]);
+    },[cart.paymentMethod, navigate, dispatch, orderCreateStatus, orderCreateData._id]);
   return (
     <div>
         <CheckoutSteps step1 step2 step3 step4 ></CheckoutSteps>

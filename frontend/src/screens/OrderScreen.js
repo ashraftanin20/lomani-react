@@ -15,12 +15,12 @@ export default function OrderScreen() {
     const { userInfo } = auth;
     const dispatch = useDispatch();
     const payOrderData = useSelector(state => state.payOrderData);
-    const { status: payStatus, error: payError, order: payData } = payOrderData;
+    const { status: payStatus, error: payError} = payOrderData;
     const orderDetails = useSelector((state) => state.orderDetails);
     const { orderDetailsError, orderDetailsData, orderDetailsStatus} = orderDetails;
 
     const orderDeliver = useSelector(state => state.orderDeliver);
-    const {status: deliverStatus, error: deliverError, order: deliverdOrder} = orderDeliver;
+    const {status: deliverStatus, error: deliverError } = orderDeliver;
 
     const deliverHandler = () => {
       dispatch(deliverOrder(orderDetailsData._id));
