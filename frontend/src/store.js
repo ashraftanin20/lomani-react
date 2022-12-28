@@ -20,6 +20,7 @@ import fetchUserReducer from './features/UserSlice';
 import userDeleteReducer from './features/DeleteUserSlice';
 import userUpdateSlice from './features/UpdateUserSlice';
 import ProfileUpdateSlice from './features/UpdateProductSlice';
+import TopSellerSlice from './features/TopSellerSlice';
 
 
 const store = configureStore({
@@ -45,6 +46,7 @@ const store = configureStore({
         userUpdateProfile: ProfileUpdateSlice,
         userDelete: userDeleteReducer,
         userUpdate: userUpdateSlice,
+        topSellerList: TopSellerSlice,
     },
     middleware: (getDefualtMiddleware) => {
         return getDefualtMiddleware().concat(productsApi.middleware);
