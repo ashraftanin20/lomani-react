@@ -28,7 +28,7 @@ import { Link } from 'react-router-dom';
             <h2>Top Sellers</h2>
             {
             statusTopSellers === "pending" ? (<LoadingBox></LoadingBox>) : 
-            statusTopSellers === "rejected" ? (<MessageBox variant="danger">{error}</MessageBox>) : 
+            statusTopSellers === "rejected" ? (<MessageBox variant="danger">{errorTopSellers}</MessageBox>) : 
             ( 
             <>
                 {topSellers.length === 0 && (<MessageBox>No Sellers Found</MessageBox>)}
