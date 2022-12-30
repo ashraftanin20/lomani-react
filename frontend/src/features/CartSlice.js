@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-
+import { useDispatch } from 'react-redux';
 const initialState = {
     cartItems: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [],
     shippingAddress: localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')) : {},
@@ -21,7 +21,7 @@ const cartSlice = createSlice({
             if(itemIndex >= 0) {
                 if (act === "add") {
                     state.cartItems[itemIndex].cartQty += qty;
-                    toast.info("Increated the product quantity by " + qty, {
+                    toast.info("Incrimented the product quantity by " + qty, {
                         position: "bottom-left"
                     });
                 } else if (act === "update") {
@@ -32,7 +32,12 @@ const cartSlice = createSlice({
                 }
             } else {
                 //const tempProduct = {...product, product: product._id, cartQty: qty}
-                const tempProduct = {
+                if(state.cartItems.length > 0 && product.seller._id !== state.cartItems[0].seller._id) {
+                    toast.error("Cannot add product from different seller to the Cart. Please " +
+                    "buy from one seller at a time!", {position: "top-center"});
+                    return; 
+                } else {
+                    const tempProduct = {
                     name: product.name,
                     image: product.image,
                     price: product.price,
@@ -45,6 +50,8 @@ const cartSlice = createSlice({
                 toast.success("Added the product to cart", {
                     position: "bottom-left"
                 });
+                }
+                
             }
             localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
         },
