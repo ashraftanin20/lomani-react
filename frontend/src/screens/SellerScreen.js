@@ -19,7 +19,7 @@ function SellerScreen () {
     
     useEffect(() => {
         dispatch(detailsUser(id));
-        dispatch(productFetch(id));
+        dispatch(productFetch({seller:id}));
     }, [dispatch, id]);
     return (
         <div className='row top'>

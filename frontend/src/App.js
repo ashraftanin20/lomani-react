@@ -25,6 +25,8 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
+import SearchBox from './components/SearchBox';
+import SearchScreen from './screens/SearchScreen';
 
 function App() {
 
@@ -47,6 +49,9 @@ function App() {
             <header className="row">
                 <div>
                     <Link className="brand" to="/">Lomani</Link>
+                </div>
+                <div>
+                  <SearchBox />
                 </div>
                 <div>
                     <Link to="/cart">Cart</Link>
@@ -119,6 +124,7 @@ function App() {
               <Route path='/placeorder' element={<PlaceOrderScreen />} />
               <Route path='/orderhistory' element={<OrderHistoryScreen />} />
               <Route path='/order/:id' element={<OrderScreen />} />
+              <Route path='/search/name/:name' element={<SearchScreen exact/>} />
               <Route element={<PrivateRoutes />}>
                 <Route path='/userprofile' element={<ProfileScreen />} />
               </Route>

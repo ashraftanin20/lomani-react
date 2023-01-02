@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom';
     const {topSellers, status: statusTopSellers, error: errorTopSellers} = topSellerList;
 
     useEffect(() => {
-        dispatch(productFetch());
+        dispatch(productFetch({}));
         dispatch(listTopSellers());
     }, [dispatch]);
     return (
