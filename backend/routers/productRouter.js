@@ -11,7 +11,9 @@ productRouter.get(
     expressAsyncHandler(async (req, res) => {
         const seller = req.query.seller || '';
         const sellerFilter = seller ? { seller } : {};
-        const products = await Product.find({...sellerFilter}).populate('seller', 'seller.name seller.logo');
+        const name = req.query.name || '';
+        const nameFillter = name ? { name: { $regex: name, $options: 'i' }} : {};
+        const products = await Product.find({...sellerFilter, ...nameFillter}).populate('seller', 'seller.name seller.logo');
         res.send(products);
     })
 );
