@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
@@ -27,6 +27,9 @@ import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
 import SearchBox from './components/SearchBox';
 import SearchScreen from './screens/SearchScreen';
+import { listProductCategories } from './features/ProductCategorySlice';
+import LoadingBox from './components/LoadingBox';
+import MessageBox from './components/MessageBox';
 
 function App() {
 
@@ -34,10 +37,17 @@ function App() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { userInfo } = auth;
-
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   const signoutHandle = () => {
     dispatch(logoutUser(null));
   }
+
+  const productCategories = useSelector(state => state.productCategories);
+  const { items: categories, error: errorCategories, status: statusCategories } = productCategories;
+
+  useEffect(() => {
+    dispatch(listProductCategories());
+  }, [dispatch]);
 
   return (
     <BrowserRouter>
@@ -48,6 +58,9 @@ function App() {
     <div className="grid-container">
             <header className="row">
                 <div>
+                    <button type="button" className="open-sidebar" onClick={() => setSidebarIsOpen(true)}>
+                      <i className="fa fa-bars"></i>
+                    </button>
                     <Link className="brand" to="/">Lomani</Link>
                 </div>
                 <div>
@@ -109,6 +122,29 @@ function App() {
                     
                 </div>
             </header>
+            <aside className={sidebarIsOpen ? 'open' : ''}>
+                      <ul className="categories">
+                        <li>
+                          <strong>Categories</strong>
+                          <button onClick={() => setSidebarIsOpen(false)} 
+                            className="close-sidebar"
+                            type="button">
+                            <i className="fa fa-close"></i>
+                          </button>
+                        </li>
+                        { statusCategories === "pending" && (<LoadingBox>Loading...</LoadingBox>) }
+                        {  statusCategories === "rejected" && (<MessageBox variant="danger">{errorCategories}</MessageBox>)} 
+                        {statusCategories === 'fulfilled' && (
+                          categories.map((c) => (
+                            <li key={c}>
+                              <Link to={`/search/category/${c}`} onClick={() => setSidebarIsOpen(false)}>
+                                {c}
+                              </Link>
+                            </li>
+                          ))
+                        )}
+                      </ul>
+            </aside>
             <main>
             <Routes>
               <Route path='/seller/:id' element={<SellerScreen />} />
@@ -125,6 +161,10 @@ function App() {
               <Route path='/orderhistory' element={<OrderHistoryScreen />} />
               <Route path='/order/:id' element={<OrderScreen />} />
               <Route path='/search/name/:name' element={<SearchScreen exact/>} />
+              <Route path='/search/name/' element={<SearchScreen exact/>} />
+              <Route path='/search/category/:category' element={<SearchScreen exact/>} />
+              <Route path='/search/category/:category/name/:name' element={<SearchScreen exact/>} />
+              <Route path='/search/category/:category/name/' element={<SearchScreen exact/>} />
               <Route element={<PrivateRoutes />}>
                 <Route path='/userprofile' element={<ProfileScreen />} />
               </Route>

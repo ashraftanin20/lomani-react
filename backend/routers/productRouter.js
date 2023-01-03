@@ -13,8 +13,20 @@ productRouter.get(
         const sellerFilter = seller ? { seller } : {};
         const name = req.query.name || '';
         const nameFillter = name ? { name: { $regex: name, $options: 'i' }} : {};
-        const products = await Product.find({...sellerFilter, ...nameFillter}).populate('seller', 'seller.name seller.logo');
+
+        const category = req.query.category || '';
+        const categoyFilter = category ? { category } : {};
+        const products = await Product.find({...sellerFilter,
+                                             ...nameFillter, 
+                                             ...categoyFilter})
+                                             .populate('seller', 'seller.name seller.logo');
         res.send(products);
+    })
+);
+
+productRouter.get('/categories', expressAsyncHandler(async(req, res) => {
+        const categories = await Product.find().distinct('category');
+        res.send(categories);
     })
 );
 

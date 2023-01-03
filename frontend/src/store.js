@@ -6,6 +6,7 @@ import productDetailsReducer from './features/ProductDetailsSlice';
 import productUpdateReducer from './features/UpdateProductSlice';
 import productCreateReducer from './features/CreateProductSlice';
 import productDeleteReducer from './features/DeleteProductSlice';
+import productCategorySlice from './features/ProductCategorySlice';
 import { productsApi } from './features/ProductsApi';
 import authReducer, { loadUser } from './features/authSlice';
 import orderCreateReducer from './features/OrderSlice';
@@ -30,6 +31,7 @@ const store = configureStore({
         productUpdate: productUpdateReducer,
         productCreate: productCreateReducer,
         productDelete: productDeleteReducer,
+        productCategories: productCategorySlice,
         //[productsApi.reducerPath]: productsApi.reducer,
         createProduct: productDetailsReducer,
         cart: cartReducer,

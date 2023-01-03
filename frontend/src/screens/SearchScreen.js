@@ -1,20 +1,35 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { productFetch } from '../features/ProductSlice';
 import Product from '../components/Product';
 
 function SearchScreen() {
-    const { name = 'all'} = useParams();
+    const { name = 'all', category = 'all'} = useParams();
 
     const products = useSelector(state => state.products);
     const { items, error, status } = products;
+
+    const productCategories = useSelector(state => state.productCategories);
+    const { items: categories, error: errorCategories, status: statusCategories } = productCategories;
     const dispatch = useDispatch();
+
+    
     useEffect(() => {
-        dispatch(productFetch({name: name !== 'all' ? name : ''}));
-    },[dispatch, name]);
+        dispatch(productFetch({name: name !== 'all' ? name : '',
+                                category: category !== 'all' ? category : '',
+                            })
+                        );
+        
+    },[category, dispatch, name]);
+
+    const getFilterUrl = (filter) => {
+        const filterCategory = filter.category || category;
+        const filterName = filter.name || name;
+        return `/search/category/${filterCategory}/name/${filterName}`;
+    }
     return (
         <div>
             <div className="row">
@@ -31,9 +46,20 @@ function SearchScreen() {
             <div className="row top">
                 <div className="col-1">
                     <h3>Department</h3>
-                    <ul>
-                        <li>Category 1</li>
+                    { statusCategories === "pending" && (<LoadingBox>Loading...</LoadingBox>) }
+                      {  statusCategories === "rejected" && (<MessageBox variant="danger">{errorCategories}</MessageBox>)} 
+                    {statusCategories === 'fulfilled' && (
+                        <ul>
+                        {categories.map((c) => (
+                            <li key={c}>
+                                <Link
+                                    className={c === category ? 'active' : ''}
+                                    to={getFilterUrl({ category: c })}>{c}</Link>
+                            </li>
+                        ))}
+                        
                     </ul>
+                    )}
                 </div>
                 <div className="col3">
                     {status === "pending" ? (<LoadingBox>Loading...</LoadingBox>) : 
