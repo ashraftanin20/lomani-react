@@ -12,7 +12,11 @@ export const productFetch = createAsyncThunk('products/productFetch', async (val
         const seller = values.seller || '';
         const name = values.name || '';
         const category = values.category || '';
-        const response = await axios.get(`/api/products?seller=${seller}&name=${name}&category=${category}`);
+        const min = values.min || 0;
+        const max = values.max || 0;
+        const rating = values.rating || 0;
+        const order = values.order || '';
+        const response = await axios.get(`/api/products?seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`);
         return response.data;
     } catch (err) {
         const message = err.response && err.response.data.message 
