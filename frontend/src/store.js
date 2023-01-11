@@ -2,6 +2,7 @@
 import cartReducer from './features/CartSlice';
 import { configureStore }from '@reduxjs/toolkit';
 import productsReducer from './features/ProductSlice';
+import createReviewReducer from './features/ReviewSlice';
 import productDetailsReducer from './features/ProductDetailsSlice';
 import productUpdateReducer from './features/UpdateProductSlice';
 import productCreateReducer from './features/CreateProductSlice';
@@ -34,6 +35,7 @@ const store = configureStore({
         productCategories: productCategorySlice,
         //[productsApi.reducerPath]: productsApi.reducer,
         createProduct: productDetailsReducer,
+        createReviewSlice: createReviewReducer,
         cart: cartReducer,
         auth: authReducer,
         orderCreate: orderCreateReducer,
