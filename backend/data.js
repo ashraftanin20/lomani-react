@@ -6,6 +6,14 @@ const data = {
             email: 'ashraf.tanin@gmail.com',
             password: bcrypt.hashSync('tanin@22', 8),
             isAdmin: true,
+            isSeller: true,
+            seller: {
+                name: "Lomani",
+                logo: '/images/logo_lomani.jpg',
+                description: 'Top Socks seller in Ukraine',
+                rating: 4.5,
+                numReviews: 100,
+            },
         },
         {
             name: 'Samir',
