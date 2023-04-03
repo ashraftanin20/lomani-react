@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
     const products = useSelector(state => state.products);
     const { items, error, status } = products;
     const dispatch = useDispatch();
+    //const latestItems = items.slice(0, 3);
 
     const topSellerList = useSelector(state => state.topSellerList);
     const {topSellers, status: statusTopSellers, error: errorTopSellers} = topSellerList;
@@ -32,7 +33,7 @@ import { Link } from 'react-router-dom';
             ( 
             <>
                 {topSellers.length === 0 && (<MessageBox>No Sellers Found</MessageBox>)}
-                <Carousel showArrows autoPlay showThumbs={false}>
+                <Carousel autoPlay={true} showThumbs={false}>
                     {topSellers.map((seller) => (
                         <div key={seller._id}>
                             <Link to={`/seller/${seller._id}`}>
@@ -41,6 +42,14 @@ import { Link } from 'react-router-dom';
                             </Link>
                         </div>
                     ))}
+                        { 
+                        //     latestItems.map((item) =>  (
+                        //     <div key={item._id}>
+                        //         <img className='large' src={item.image} alt={item.name}>
+                        //         </img>
+                        //     </div>
+                        //))}
+                    }
                 </Carousel>
              </>
             )}
