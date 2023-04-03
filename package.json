@@ -1,11 +1,14 @@
 {
+  "homepage": "http://ashraftanin20.github.io/lomani",
   "name": "lomani",
   "type": "module",
   "version": "1.0.0",
   "description": "The server for Lomani site.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch backend --exec node --experimental-modules backend/server.js"
+    "start": "nodemon --watch backend --exec node --experimental-modules backend/server.js",
+    "predeploy": "cd frontend npm run build && node --experimental-modules backend/server.js",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -16,7 +19,6 @@
   "bugs": {
     "url": "https://github.com/ashraftanin20/lomani-react/issues"
   },
-  "homepage": "https://github.com/ashraftanin20/lomani-react#readme",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
     "bcryptjs": "^2.4.3",
@@ -32,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "eslint": "^8.21.0",
-    "eslint-plugin-react": "^7.30.1"
+    "eslint-plugin-react": "^7.30.1",
+    "gh-pages": "^5.0.0"
   }
 }
